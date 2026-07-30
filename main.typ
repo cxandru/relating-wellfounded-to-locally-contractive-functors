@@ -71,7 +71,7 @@
 
 Fix a set $A$ . Also fix a well-founded (i.e. supporting wellfounded elimination) transitive relation $<$ on it, with $≤$ its reflexive closure. Then there are some definitions to consider
 
-== The downset /  よ-embedding / suboject classifier $Ω$. 
+== The downset /  よ-embedding / suboject classifier $Ω$.
 We define the downset for $≤$ as $↓ i = { j | j ≤ i } = よ i$.
 
 Notes: could you also write $↓ ≔ ∏_(i ∈ A) { j | j ≤ i } = よ$ or $↓ = ∏_(i ∈ A) Σ_(j ∈ A) j ≤ i$.
@@ -98,15 +98,42 @@ We say $F$ is wellfounded when it is equivalent to a family $F_<$ (is this a cor
 
 #adjunction_triple(Psh,Fam,$F$,forget,cofree)
 
-== Refresher : Limits in $"Set"$
+== Refresher
 
-#theorem([@maclaneCategoriesWorkingMathematician1978 V.1.1])[
+=== Limits in $"Set"$
+
+#theorem([@maclaneCategoriesWorkingMathematician1978[V.1.1]])[
     $"Set"$ is complete.
 ]
 #proof[
     Let $D : J → "Set"$ be a diagram. We claim the limiting cone to have apex $"Cone"(*,D)$, i.e. the _set_ of all cones for $D$.
-    Writing this out one gets $"Cone"(*,D) = Δ_* ⇒ D = { (x)_(j ∈ J) ∈ product_(j ∈ J) D_0 j | ∀ a : j → j' . D_1 a (x_j) = x_j'}$. I.e. "$J$-tuples" of sets pulled back / equalized to contain only those elements that are succesfully chased through all diagrams in $"Set"$ induced by $D_1$. 
+    Writing this out one gets $"Cone"(*,D) = Δ_* ⇒ D = { (x)_(j ∈ J) ∈ product_(j ∈ J) D_0 j | ∀ a : j → j' . D_1 a (x_j) = x_j'}$. I.e. "$J$-tuples" of sets pulled back / equalized to contain only succesfull diagram chases through all diagrams in $"Set"$ induced by $D_1$.
+
+    Now this candidate apex still needs to be shown to be a cone, i.e. we require $v : Δ_("Cone"(*,D)) ⇒ D$. This is readily given by $v_i = σ ↦ σ_i$, i.e. ` $ i` "evaluation at i".
+
+    The cone is _limiting_: Consider a competing cone $τ : X ⇒ D$. Then for each $x∈X$, $τ x$ is of type $"Cone"(*,D)$. So there is a unique function $h : X → "Cone"(*,D)$, namely $h = x ↦ τ x$, i.e. `τ $` "evaluation of $τ$".
+
+    #cite(<maclaneCategoriesWorkingMathematician1978>, form: "author"): There is a natural bijection $ "Cone"(X,D) ≅ "Set"(X,"Cone"(*,D)) $
+    Since a cone is just a natural transformation, this may be rewritten as an adjunction
+    $ "Nat"(Δ X, D) ≅ "Set"(X,"Cone"(*,D)) $
+    (I.e. $Δ ⊣ "Cone"(*,·)$?)
+
+    By the very definition of limit, this proves that $"Lim" D ≅ "Cone"(*, D)$.
+
+    (I wonder if this has anything to do with $"Cone"(X,D) ≅ "Cone"("Set"(*,X),D) ≅ "Set"(X,"Cone"(*,D)) $ ?)
 ]
+
+=== Closed Functors
+#definition([Closed Functor, @eilenbergClosedCategories1966[Section 3]])[
+    A _closed functor_ between two closed categories $(C,⇒_C)$ and $(C',⇒_C')$ consists of:
+    #[#set enum(numbering: "(i)")
+        + a functor $F : C → C'$
+        + a natural transformation (the internalized "action on morphisms"):
+          $ F'_(A,B) : F (A ⇒_C B) ⇒ (F A ⇒_C' F B) $
+    ]
+    subject to coherences.
+]
+
 
 == Later Modality
 === On PShfs
