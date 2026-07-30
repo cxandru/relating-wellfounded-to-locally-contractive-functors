@@ -149,14 +149,16 @@
             ;
             pkgFilter = pkg: pkgs.lib.elem pkg.tlType [ "run" "bin" "doc" ];
           });
+          typstEnv = pkgs.typst.withPackages (p : [ p.fletcher p.ctheorems ]);
       in
         {
-          devShells.default = pkgs.mkShell {
-            OSFONTDIR="${pkgs.libertinus}";
+          devShells.default = pkgs.mkShellNoCC {
+            TYPST_FONT_PATHS = "${pkgs.noto-fonts-cjk-sans}";
             buildInputs =
               [
-                pkgs.pcre #used in Makefile for pcregrep
-                texEnv
+                typstEnv
+                # https://github.com/jacg/nix-starters/blob/cdd550c82b29fffe63d4018e74d85dbbe638c64f/typst/flake.nix (also has stuff for fonts)
+                pkgs.tinymist
               ];
           };
         }
