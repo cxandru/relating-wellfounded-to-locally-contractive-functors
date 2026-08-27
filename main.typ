@@ -71,6 +71,7 @@
 #let cofree = $G$
 #let forget = $U$
 #let rest(X,r) = $#X |_(#r)$
+#let dot = $. thin$ //for after quantification
 
 = The setting
 
@@ -112,7 +113,7 @@ We say $F$ is wellfounded when it is equivalent to a family $F_<$ (is this a cor
 ]
 #proof[
     Let $D : J → "Set"$ be a diagram. We claim the limiting cone to have apex $"Cone"(*,D)$, i.e. the _set_ of all cones for $D$.
-    Writing this out one gets $"Cone"(*,D) = Δ_* ⇒ D = { (x)_(j ∈ J) ∈ product_(j ∈ J) D_0 j | ∀ a : j → j' . D_1 a (x_j) = x_j'}$. I.e. "$J$-tuples" of sets pulled back / equalized to contain only succesfull diagram chases through all diagrams in $"Set"$ induced by $D_1$.
+    Writing this out one gets $"Cone"(*,D) = Δ_* ⇒ D = { (x)_(j ∈ J) ∈ product_(j ∈ J) D_0 j | ∀ a : j → j' dot D_1 a (x_j) = x_j'}$. I.e. "$J$-tuples" of sets pulled back / equalized to contain only succesfull diagram chases through all diagrams in $"Set"$ induced by $D_1$.
 
     Now this candidate apex still needs to be shown to be a cone, i.e. we require $v : Δ_("Cone"(*,D)) ⇒ D$. This is readily given by $v_i = σ ↦ σ_i$, i.e. ` $ i` "evaluation at i".
 
