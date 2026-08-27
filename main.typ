@@ -17,7 +17,12 @@
   base: "theorem",
   titlefmt: strong
 )
-#let definition = thmbox("definition", "Definition", inset: (x: 1.2em, top: 1em))
+#let definition = thmbox("definition", "Definition", inset: (x: 1.2em, top: 1em),
+    bodyfmt: body => {
+        set enum(numbering: "(i)")
+        body
+    }
+)
 
 #let example = thmplain("example", "Example").with(numbering: none)
 #let proof = thmproof("proof", "Proof")
