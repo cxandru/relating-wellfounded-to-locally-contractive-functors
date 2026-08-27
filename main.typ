@@ -130,14 +130,21 @@ We say $F$ is wellfounded when it is equivalent to a family $F_<$ (is this a cor
 ]
 
 === Closed Functors
+
+#let expi(f) = $⌜ #f ⌝$
+Given a closed category $(C,⇒_C)$, denote the exponential inclusion:
+$ expi(–) : C(A,B) → A ⇒_C B $
+#let ecomp(g,f) = $ #g ○ #f $
+Also, denote the internalized composition as: // it does need a tuple, doesn't it. Else you'd get sth higher-order. hmm
+$ ○ : (Y ⇒_C Z) ⊗ (X ⇒_C Y) → (X ⇒_C Z) $
+
 #definition([Closed Functor, @eilenbergClosedCategories1966[Section 3]])[
     A _closed functor_ between two closed categories $(C,⇒_C)$ and $(C',⇒_C')$ consists of:
-    #[#set enum(numbering: "(i)")
-        + a functor $F : C → C'$
-        + a natural transformation (the internalized "action on morphisms"):
-          $ F'_(A,B) : F (A ⇒_C B) ⇒ (F A ⇒_C' F B) $
-    ]
-    subject to coherences.
+    + a functor $F : C → C'$
+    + a natural transformation (the internalized action on morphisms):
+      $ F'_(A,B) : F (A ⇒_C B) ⇒ (F A ⇒_C' F B) $
+    subject to coherences://technically, you need to write this ○ (F'_(X,Y) , expi(f))…
+    + $∀ f ∈ C(A,B) dot F'_(X,Y) ○ expi(f) = expi(F_1 f) $
 ]
 
 
