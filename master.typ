@@ -135,7 +135,7 @@ $bold("coEM")(W) = (bold("EM")(W))^op$
 
 === The adjoint triple between presheaves and families <note-00fd>
 
-A #emph[family] over $cal(C)$ is a set $A(x)$ for each object $x$,
+A #emph[family] over $cal(C)$ is a _set_ $A(x)$ for each object $x$,
 with no action of morphisms. Families form a category
 $bold("Fam")(cal(C))$: a morphism $A to B$ is a function
 $A(x) to B(x)$ for each $x$.
@@ -149,9 +149,9 @@ bold("Cofree")$.
 
 The two adjoints demonstrate different means of forcing a family to be
 functorial. The right adjoint universally quantifies over morphisms
-in: $bold("Cofree")(A)(x) = product _(y) cal(C)(y, x) to
+_in_: $bold("Cofree")(A)(x) = product _(y) cal(C)(y, x) to
 A(y)$, with restriction along $f$ given by precomposition. The left
-adjoint instead quantifies existentially over morphisms out:
+adjoint instead quantifies existentially over morphisms _out_:
 $bold("Free")(A)(x) = sum _(y) cal(C)(x, y) times A(y)$,
 with restriction acting on the first component. (For $bold("Free")$
 we ask that $cal(C)$ have a #emph[set] of objects, so that this sum is
