@@ -6,9 +6,8 @@
 #let Psh(C) = $bold("Psh") #C$
 // 1.15em because Hiragino draws kana small on the em; the kern trims the
 // full-width advance, which otherwise gaps before the argument.
-// Hiragino ships with macOS; a Linux build needs a kana face named here.
 #let yo = math.class("normal", box(
-  text(font: "Hiragino Mincho ProN", size: 1.15em, "よ") + h(-0.25em)))
+  text(font: "Noto Sans CJK JP", size: 1.15em, "よ") + h(-0.25em)))
 
 #let Ob(C) = $"Ob"(#C)$
 #let Hom(C, a, b) = $"Hom"_#C (#a, #b)$

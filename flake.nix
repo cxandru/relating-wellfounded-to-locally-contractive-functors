@@ -149,11 +149,21 @@
             ;
             pkgFilter = pkg: pkgs.lib.elem pkg.tlType [ "run" "bin" "doc" ];
           });
-          typstEnv = pkgs.typst.withPackages (p : [ p.fletcher p.ctheorems ]);
+          inherit (pkgs) lib;
+          # full transitive closure over typstDeps
+          typstClosure =
+            roots:
+            map (e: e.pkg) (builtins.genericClosure {
+              startSet = map (p: { key = p.outPath; pkg = p; }) roots;
+              operator = { pkg, ... }: map (d: { key = d.outPath; pkg = d; }) (pkg.typstDeps or [ ]);
+            });
+          typstEnv = pkgs.typst.passthru.wrapper {
+            packages = p: typstClosure [ p.fletcher p.ctheorems ];
+            fonts = [ "${pkgs.noto-fonts-cjk-sans}/share/fonts" ];
+          };
       in
         {
           devShells.default = pkgs.mkShellNoCC {
-            TYPST_FONT_PATHS = "${pkgs.noto-fonts-cjk-sans}";
             buildInputs =
               [
                 typstEnv
