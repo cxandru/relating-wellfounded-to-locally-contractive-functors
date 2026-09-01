@@ -149,16 +149,10 @@
             ;
             pkgFilter = pkg: pkgs.lib.elem pkg.tlType [ "run" "bin" "doc" ];
           });
-          inherit (pkgs) lib;
-          # full transitive closure over typstDeps
-          typstClosure =
-            roots:
-            map (e: e.pkg) (builtins.genericClosure {
-              startSet = map (p: { key = p.outPath; pkg = p; }) roots;
-              operator = { pkg, ... }: map (d: { key = d.outPath; pkg = d; }) (pkg.typstDeps or [ ]);
-            });
           typstEnv = pkgs.typst.passthru.wrapper {
-            packages = p: typstClosure [ p.fletcher p.ctheorems ];
+            # TODO: remove `pkgs.lib.closePropagation` once we can ff to 153c53403e1c9b7ff6dcc10c7de55fac36e8bd2f
+            # cf [typstPackages: Fix incorrect dependency propagation by cherrypiejam · Pull Request #558184 · NixOS/nixpkgs](https://github.com/NixOS/nixpkgs/pull/558184/)
+            packages = p: pkgs.lib.closePropagation [ p.fletcher p.ctheorems ];
             fonts = [ "${pkgs.noto-fonts-cjk-sans}/share/fonts" ];
           };
       in
