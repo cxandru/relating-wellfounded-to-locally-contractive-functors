@@ -75,3 +75,5 @@
 #let iso = math.tilde.equiv
 #let defeq = math.colon.eq
 #let compose = $circle.small$
+
+#let wlim(W) = $scripts(lim)^(#W)$

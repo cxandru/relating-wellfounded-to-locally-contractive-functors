@@ -368,66 +368,68 @@ chosen morphism $x to y$.
 Earlier is left adjoint to later: $lhd tack.l later$
 
 Under this adjunction, $bold("next") : P to later P$
-corresponds to $bold("prev") : lhd P to P,$.
+corresponds to $bold("prev") : lhd P to P$.
 
 ]
 
-=== Weighted limits, nerves, and later <note-00p0>
+=== Weighted limits <note-00q1>
 
-#definition[ A #emph[weight] on a category $cal(C)$ is a functor $W :
-cal(C) to Psh(cal(C))$. For a presheaf $P$, the
-#emph[weighted limit] of $P$ by $W$ is the presheaf which represents
-the functor of maps from the weight into $P$. Concretely, it is the
-#emph[nerve along $W$]:
+#definition[ A #emph[weight] for a diagram $F : cal(J) to cal(D)$ is a
+functor $W : cal(J) to Set$. The limit of $F$ #emph[weighted by $W$]
+is an object $wlim(W) F$ of $cal(D)$ with
 
-    $ bold("Nerve")(W) : Psh(cal(C)) to Psh(cal(C)), quad bold("Nerve")(W)(P)(c) = (Psh(cal(C)))(W(c),
+    $ cal(D)(d, wlim(W) F) iso [cal(J), Set](W, cal(D)(d, F(-))) $
+
+naturally in $d$, where $cal(D)(d, F(-))$ is the hom-diagram $cal(J)
+to Set$ sending $j$ to $cal(D)(d, F(j))$. Ordinary limits are the case
+$W = Delta unit$.
+]
+
+Every weighted limit is an ordinary (conical) limit: restricting $F$
+along the projection $bold("Fst") : bold("Element")(W) to cal(J)$ from
+the category of elements of $W$ gives a diagram over which a cone is
+exactly a $W$-weighted cone on $F$:
+
+$ wlim(W) F iso lim (F compose bold("Fst")). $
+
+For presheaves — the case $cal(J) = cal(C)^op$ and $cal(D) = Set$,
+where a weight is again a presheaf — such a limit is by the above an
+ordinary limit in $Set$, and so always exists:
+
+$ wlim(W) P iso lim_((c, w) in bold("Element")(W)^op) P(c) =
+(Psh(cal(C)))(W, P). $
+
+=== Nerves and later <note-00p0>
+
+#definition[ A functor $V : cal(C) to Psh(cal(C))$ can be read as a
+family of #link(<note-00q1>)[weights], one weight $V(c)$ for each
+object $c$. Its #emph[nerve] collects the resulting weighted limits
+into a single presheaf:
+
+    $ bold("Nerve")(V) : Psh(cal(C)) to Psh(cal(C)), quad bold("Nerve")(V)(P)(c) = wlim(V(c)) P = (Psh(cal(C)))(V(c),
 P). $
 
-Thus a section of $bold("Nerve")(W)(P)$ over $c$ is a coherent way
-to evaluate every element of the weighting presheaf $W(c)$ in $P$.
-Naturality of $W$ makes this assignment contravariant in $c$, so it is
-again a presheaf.
-
-This is the $Set$-enriched form of the ordinary weighted-limit
-universal property: maps into the weighted limit are natural
-transformations from the weight to the hom-diagram.
+Thus a section of $bold("Nerve")(V)(P)$ over $c$ is a coherent way
+to evaluate every element of the weight $V(c)$ in $P$.
+Functoriality of $V$ makes this assignment contravariant in $c$, so it
+is again a presheaf.
 
 ]
 
-The set in this formula is itself an ordinary limit in
-$Set$. For any presheaf $Q$, let $bold("Element")(Q)$ be its
-category of elements, and form the diagram
-
-$ Delta_Q : bold("Element")(Q)^op to Set,
-quad Delta_Q = P compose bold("Fst")^op. $
-
-Then the hom-set is the limit of $Delta_Q$:
-
-$ (Psh(cal(C)))(Q, P) iso lim Delta_Q = lim_((c, q) in
-bold("Element")(Q)^op) P(c), $
-
-naturally in $Q$ and $P$, where $Delta_Q (c, q) = P(c)$ by definition.
-
-The limiting cone evaluates a natural transformation at its elements:
-for every $(c, q : Q(c))$, its projection is $(Psh(cal(C)))(Q, P) to P(c)$, $alpha arrow.r.bar alpha_c (q)$. The
-equations of the cone are exactly the naturality equations for
-$alpha$; conversely, a compatible family of such evaluations
-reconstructs a natural transformation.
-
-Now take the weight to be the strict-downset functor
-$bold("StrictDown") : cal(C) to Psh(cal(C))$ of a
-#link(<note-00fg>)[direct category]. The #link(<note-00fn>)[later
-modality] is precisely its nerve, or equivalently this weighted limit:
+Now read the strict-downset functor $bold("StrictDown") : cal(C) to
+Psh(cal(C))$ of a #link(<note-00fg>)[direct category] this way,
+weighting by the presheaf $bold("StrictDown")(x)$ at each object $x$.
+The #link(<note-00fn>)[later modality] is precisely its nerve:
 
 $ later P &= bold("Nerve")(bold("StrictDown"))(P), \
-later P (x) &= (Psh(cal(C)))(bold("StrictDown")(x), P)
+later P (x) &= wlim(bold("StrictDown")(x)) P = (Psh(cal(C)))(bold("StrictDown")(x), P)
 iso lim_((y, f) in bold("Element")(bold("StrictDown")(x))^op) P(y). $
 
 So $later P$ is computed with a genuine
 limit in $Set$.
 
-When the direct category has a #link(<note-00gf>)[predecessor] $rho :
-p to x$, the weighting presheaf is representable:
+When $x$ has a #link(<note-00gf>)[predecessor] $rho :
+p to x$, the weight is representable:
 $bold("StrictDown")(x) iso yo p$. Yoneda then
 simplifies the weighted limit:
 $later P (x) iso (Psh(cal(C)))(yo p, P) iso P(p)$. For the
