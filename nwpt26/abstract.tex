@@ -1,0 +1,214 @@
+\documentclass{./EasyChair3.5/easychair}
+\usepackage{unicode-math}
+\usepackage{multicol}
+\usepackage{mathtools}
+\usepackage{csquotes}
+\usepackage{tikz}
+\usetikzlibrary{backgrounds,calc,positioning,arrows.meta,quotes,cd}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage[inline]{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{convention}{Convention}
+\newtheorem{observation}{Observation}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{remark}
+\newtheorem{notation}{Notation}
+\newtheorem{remark}{Remark}
+\usepackage{microtype}
+\usepackage{newunicodechar}
+\usepackage{mathtools}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+%\DeclareUnicodeCharacter{21D2}{\ensuremath{\Rightarrow}}
+\newunicodechar{ℰ}{\ensuremath{\mathscr{E}}}
+\newunicodechar{₀}{\ensuremath{{}_{0}}}
+\newunicodechar{▷}{\ensuremath{\triangleright}}
+\newunicodechar{ℕ}{\ensuremath{ℕ}}
+\newunicodechar{↦}{\ensuremath{↦}}
+\newunicodechar{∘}{\ensuremath{∘}}
+\newunicodechar{ᵢ}{\ensuremath{_i}}
+\newunicodechar{≔}{\ensuremath{≔}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{₁}{\ensuremath{{}_{1}}}
+\newunicodechar{₂}{\ensuremath{{}_{2}}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{≺}{\ensuremath{<}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{⊥}{\ensuremath{\bot}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{↓}{\ensuremath{\downarrow}}
+%% Invisible characters for otherwise clashing definitions.
+\newunicodechar{⇃}{\ensuremath{\!}}
+\newunicodechar{⇂}{\ensuremath{\!}}
+\newunicodechar{↿}{\ensuremath{\!}}
+\newcommand{\sle}{\sqsubseteq} %sort \le
+\newcommand{\sgt}{\sqsupset} %sort \ge
+\newunicodechar{⊒}{\ensuremath{\sgt}}
+\newunicodechar{⊑}{\ensuremath{\sle}}
+\newunicodechar{ₗ}{\ensuremath{_l}}
+\newunicodechar{ᵣ}{\ensuremath{_r}}
+\newunicodechar{⁻}{\ensuremath{^-}}
+\newunicodechar{¹}{\ensuremath{^1}}
+\newunicodechar{∷}{\ensuremath{\mathbin{::}}}
+\newunicodechar{┌}{|\ensuremath{\lceil}}
+\newunicodechar{┐}{\ensuremath{\rceil}|}
+\newunicodechar{₁}{\ensuremath{_1}}
+\newunicodechar{₂}{\ensuremath{_2}}
+\newunicodechar{→}{\ensuremath{\to}}
+\newunicodechar{⸴}{\ensuremath{,}}
+\newunicodechar{ℬ}{\ensuremath{\mathcal{M}\!}}
+\newunicodechar{⊔}{\ensuremath{\sqcup}}
+\newunicodechar{⊓}{\ensuremath{\sqcap}}
+\newunicodechar{⊎}{\ensuremath{\uplus}}
+% elide "on obj/on morphs" distinction in code presentation
+\newunicodechar{₀}{}
+\usepackage{../agda}
+\usepackage{catchfilebetweentags}
+
+\DeclarePairedDelimiter{\expi}{\lceil}{\rceil}
+
+\newcommand{\nicehref}[2]{%
+\begin{tikzpicture}[baseline=(txt.base)]
+\node[text=blue!80!white!40!black,inner sep=0pt,text depth=1.1pt] (txt)
+  {\href{#1}{{#2}{\hspace*{1pt}\raisebox{.0pt}{\color{blue!30!white}\tiny\faExternalLink}}}};
+% the text depth (space below the baseline) determines the position of the (following) underline.
+% I've tried to align it with underscore characters.
+\begin{scope}[on background layer]
+\draw[color=blue!25!white] (txt.south west) -- (txt.south east);
+\end{scope}
+\end{tikzpicture}%
+}
+
+\newcommand{\inj}{\mathsf{in}}
+\newcommand{\C}{{\ensuremath{\mathcal{C}}}}
+
+\title{Intrinsically correct \& total functional programming with enrichment, contractive functors, recursive coalgebras and cofree presheaves}
+
+\author{
+  Cass Alexandru \inst{1} \and Steven Schaefer \inst{2} \and Max S. New \inst{2}
+}
+
+\institute{
+  RPTU Kaiserslautern-Landau, Radboud University Nijmegen
+  \and University of Michigan
+}
+
+\authorrunning{Alexandru, Schaefer, New}
+
+% \titlerunning{} has to be set to either the main title or its shorter
+% version for the running heads. When processed by
+% EasyChair, this command is mandatory: a document without \titlerunning
+% will be rejected by EasyChair
+\titlerunning{Intrinsically correct \& total fp}
+\begin{document}
+
+\maketitle
+
+Recent progress has been made \cite{alexandruIntrinsicallyCorrectAlgorithms2026} in formalising synergies between proofs of partial and total correctness of algorithms defined using structured recursion \cite{hinzeConjugateHylomorphismsMother2015}.
+This was acheived with the introduction of the novel notion of a well founded functor.
+We acheive the same result, i.e. a criterion for all coalgebras for an endofunctor on the power category \(𝒞^A\), for \(A\) the carrier of a well founded ordering \(<\), to be recursive.
+Our criterion is a novel instantiation of the preexisting notion of a locally contractive functor \cite{birkedalFirstStepsSynthetic2012}.
+This instantiation is acheived by enriching \(𝒞^A\) in presheaves over \((A,<)\) using change of base of enrichment along the cofree presheaf functor.
+Our hope is that demonstrating how this preexisting notion can be instantiated for this novel application may lead to a broader adoption of the technique, as well as enabling reuse of all existing known results about locally contractive functors in this setting.
+
+\section{Background}
+\label{sec:background}
+
+\paragraph{Recursive Coalgebras}
+Expressing recursive algorithms using coalgebra-to-algebra morphisms has a long history \cite{CaprettaUV06,jeanninWellfoundedCoalgebrasRevisited2017,taylor99,meijerFunctionalProgrammingBananas1991}.
+The key idea is the following: In a base category \(𝒞\) modeling the types and functions of your functional programming language, choose an endofunctor \(F \colon 𝒞 → 𝒞\). We can think of this functor as describing a distribution; e.g.\ the functor \(B X ≔ 1 + X × A × X\) describes the distribution of either a base case \(* : 1\) or two inputs \(l , r : X\) and an output \(o : A\).
+A recursive algorithm \(h\) can be seen as the following sequence of steps:
+\begin{enumerate*}[itemjoin=~]
+\item \emph{divide} input into new input, with a distribution given by \(F_0\);
+\item recur under \(F_1\);
+\item \emph{combine} the results of the recursive invocations.
+\end{enumerate*}
+E.g.\ the recursive case of Quicksort \autoref{fig:qsort-recursive} (due to \cite{CaprettaUV06}); the general case is \autoref{fig:coalg-alg-morphism}.
+
+\noindent
+\begin{minipage}[t]{.6\textwidth}
+\begin{tikzcd}[ampersand replacement=\&,
+every arrow/.append style={mapsto},column sep=2cm]
+ {(i_{≤ p}, p, i_{> p})} \arrow[r, "\mathsf{qsort} \times \mathrm{id}\times \mathsf{qsort}"] \& {(\mathsf{qsort}(i_{≤ p}), p, \mathsf{qsort}(i_{> p}))} \arrow[d, "\mathsf{concat}"] \\
+ip \arrow[u,"\mathsf{partition}"] \arrow[r,"\mathsf{qsort}"] \&  {\mathsf{qsort}(i_{≤ p})\, p\, \mathsf{qsort}(i_{> p})}
+\end{tikzcd}\vspace{-1\baselineskip{}}
+\captionof{figure}{quicksort recursive case}\label{fig:qsort-recursive}
+\end{minipage}\hfill
+\begin{minipage}[t]{.4\textwidth}
+\begin{tikzcd}
+F_0I \arrow[r, "F_1h"] & F_0O \arrow[d, "a"] \\
+I \arrow[u,"c"] \arrow[r,"h"] &  O
+\end{tikzcd}
+\makebox[\linewidth][r]{\parbox{1.25\linewidth}{\captionof{figure}{coalgebra-to-algebra morphism}\label{fig:coalg-alg-morphism}}}
+\end{minipage}
+
+A coalgebra \(c\) is called \emph{recursive}, if for every target algebra \(a\) there is a unique \(h\) such that \eqref{fig:coalg-alg-morphism} commutes, i.e.\ the recursive equation \(h = c ; F h ; a\) has a unique solution and can be read as a \emph{definition}.
+Intuitively, this means \(c\) is a division step that, when iterated, builds only well founded trees of shape \(F\), regardless of the starting input \(i : I\).
+The challenge of defining an algorithm as a coalgebra-to-algebra morphism in a total language then can be reduced to proving the recursivity of its coalgebra.
+
+This challenge becomes easier to tackle when we take partial correctness into account. Continuing with our Quicksort, we home in on its coalgebra, \textsf{partition}. Its type, \(\mathsf{List} A → 1 + \mathsf{List} A × \mathsf{List} A\) is really too coarse. The partial correctness of \textsf{partition} entails
+\begin{enumerate*}[itemjoin=~]
+\item the output \(B (\mathsf{List} A)\) value contain the same \emph{elements} as the input;
+\item the elements to the left/right of the selected pivot be respectively smaller/greater than it.
+\end{enumerate*}
+One approach to refine its type in order to capture this, due to \cite{AlexandruCRW25}, is to move to the setting of \emph{families} in \textsf{Set} indexed by the set \(ℳA\) of finite multisets of element type \(A\).
+The refined \(B\) becomes \(\bar{B}\) (expressed for better comprehensibility in the slice category \(\mathsf{Set}/ℳA\) instead of in \(\mathsf{Set}^{ℳA}\)) :
+\[
+  \bar{B} \begin{pmatrix}
+    X \\
+    f
+  \end{pmatrix}
+  ≔
+  \begin{pmatrix}
+    1 \\
+    * ↦ \emptyset
+  \end{pmatrix}
+  +
+  \begin{pmatrix}
+    \{(l,p,r) ∈ X × A × X \mid ∀ e_l ∈ f(l), e_r ∈ f(r).\, e_l ≤ p ≤ e_r\} \\
+    (l, p, r) ↦ f(l) \uplus \{p\} \uplus f(r)
+  \end{pmatrix}
+\]
+The interesting thing to note is the following: The multiset indices in functorial positions are smaller than the result index: \(f(l),f(r) < f(l) \uplus \{p\} \uplus f(r)\).
+In particular, that means we are able to define a functorial action of \(F\), \(F_1'\) that, intuitively, takes morphisms \(A → B\) at smaller indices and produces a morphism \(F_0 A → F_0 B\) at the current index, such that \(F_1'\) agrees with \(F_1\). This then allows us to essentially construct a solution to \eqref{fig:coalg-alg-morphism} as an inhabitant of the homset \(I → O\) using well founded recursion. We proceed to make all of these notions formal. For notions of enriched category theory we mostly follow~\cite{weideUnivalentEnrichedCategories2026}.
+
+\paragraph{Enrichment}
+To talk about an action of a functor \(F\) that isn't \(F_1\), we need the notion of:
+\begin{definition}[Enrichment of a category \(𝒞\) in a monoidal category \(𝒱\), {\cite[Def.~2.2]{weideUnivalentEnrichedCategories2026}}]
+  An enrichment of a category \(𝒞\) in a monoidal category \(𝒱,⊗,I\) consists of the following data:
+  \begin{itemize}
+  \item for every \(x, y \colon 𝒞\) the external Hom \(ℰ_{X,Y}\), an external identity morphism, sequencing operation, and external counterparts to unitality \& associativity coherences
+  \item for every \(x, y \colon 𝒞\) a bijection \(\expi{-}\colon 𝒞(x,y) ≅ 𝒱[I,ℰ_{X,Y}]\) witnessing that \(𝒞\) and the \emph{enriched category} with objects \(𝒞_0\) and homsets \(𝒱[I,ℰ_{X,Y}]\) are isomorphic as categories.
+  \end{itemize}
+\end{definition}
+\begin{definition}[Enrichment of a functor, {\cite[Def.~2.4]{weideUnivalentEnrichedCategories2026}}]
+  Given categories \(C, D\) and enrichments \(EC, ED\) in a monoidal category \(V\) an \emph{enrichment} of a functor \(F \colon C → D\) is an external functorial action
+  \(F_1' \colon 𝒱[EC.ℰ_{X,Y},ED.ℰ_{F_0 X, F_0 Y}]\), obeying external counterparts to preservation of identities and sequencing, such that \(F_1\) and \(F_1'\) \emph{agree}:
+  \[∀ x, y : C_0,\, f : C[x,y].\ ED.\expi{F_1 f} = EC.\expi{f} ; F_1' \]
+\end{definition}
+
+\paragraph{Locally Contractive Functors}
+\begin{definition}[{\cite[Def.~7.2]{birkedalFirstStepsSynthetic2012}}]
+  Let \(V\) be a model of guarded recursive terms \cite[Def.~6.1]{birkedalFirstStepsSynthetic2012}. Given categories \(C,D\), with enrichments \(EC, ED\) in \(V\), a functor \(F \colon C → D\) is \emph{locally contractive} if it factors as the sequence of the enrichments
+  \[CE \xrightarrow{\mathsf{next}} ▷CE \xrightarrow{F'} ED\]
+\end{definition}
+
+\begin{corollary}
+  Let \(V\) be a model of guarded recursive terms, \(C,D\) categories with enrichments \(EC, ED\) in \(V\). A functor is \emph{locally contractive} if it as an enrichment of the sequence of enrichments \(CE \xrightarrow{\mathsf{next}} ▷CE \xrightarrow{F'} ED\), i.e.
+\[∀ x, y : C_0,\, f : C[x,y].\ ED.\expi{F_1 f} = EC.\expi{f} ; \mathsf{next} ; F_1' \]
+\end{corollary}
+
+
+\paragraph{Change of Base}
+
+\paragraph{Example Application to QuickSort}
+
+\bibliographystyle{plain}
+\bibliography{../works}
+
+\end{document}
