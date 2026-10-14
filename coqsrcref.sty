@@ -1,0 +1,90 @@
+\RequirePackage{xstring}
+
+\colorlet{srcfilenamecolor}{blue!40!black}
+
+\DeclareTextFontCommand{\mytexttt}{\ttfamily\hyphenchar\font=45\relax}
+
+
+\newcounter{coqreferencecounter}
+\setcounter{coqreferencecounter}{0}
+\def\coqreferencesbuffer{}
+\newcommand{\auxcoqref}[5]{%
+	% #1 identifier in main paper
+  % #2 optional: \autoref{} to the main paper
+	% #3 filename
+	% #4 coq name
+	% #5 optional explanation
+	\stepcounter{coqreferencecounter}%
+	\g@addto@macro\coqreferencesbuffer{%
+		\item[\ifstrempty{#1}{#2}{\autoref{#1}}]%
+      \ifstrempty{#4}{}{%
+        \hspace{4pt plus 1mm minus 3pt}$\hat{=}$\hspace{2mm plus 1mm minus 1mm}\href{\onlineHtmlURL#3.html\##4}{\texttt{#4}}%
+      }%
+      % insert breakable space after '.'
+		\StrSubstitute{#3}{.}{.\hskip0pt}[\coqfilename]%
+    \hspace{4pt plus 1mm minus 3pt}in%
+    \hspace{4pt plus 1mm minus 3pt}%
+    \begingroup\mytexttt{\color{srcfilenamecolor}%
+      \href{\onlineHtmlURL#3.html\##4}{\coqfilename}%
+    }%
+    \endgroup%
+		% clickable link:
+		%\href{\coqdocURLPrefix\coqfilename.html\##3}{%
+		%	\UScore{#3} (in \UScore{#2})%
+		%}%
+		\ifstrempty{#5}{.}{%
+		\hspace{4pt plus 1mm minus 3pt}--%
+    \hspace{4pt plus 1mm minus 3pt}#5%
+		}%
+	}%
+}
+
+\newcommand{\writeauxcoqref}[5]{%
+	% write \auxcoqref to aux file
+	\write\@auxout{%
+		\noexpand\auxcoqref%
+			{\unexpanded{#1}}%
+			{\unexpanded{#2}}%
+			{\unexpanded{#3}}%
+			{\unexpanded{#4}}%
+			{\unexpanded{#5}}%
+	}%
+}
+
+
+\newcounter{auxcoqlabelcounter}
+\setcounter{auxcoqlabelcounter}{0}
+\newcommand{\coqref}[4]{%
+	% #1 coq.v file
+	% #2 coq identifier
+	% #3 comment
+  % #4 the link text
+	\stepcounter{auxcoqlabelcounter}%
+	\edef\auxcoqcurrentlabel{auxcoqlabel\arabic{auxcoqlabelcounter}}%
+	\ifcsname TWSK@oldlabel\endcsname%
+		\TWSK@oldlabel{\auxcoqcurrentlabel}%
+	\else%
+		\expandafter\label{\auxcoqcurrentlabel}%
+	\fi%
+	%\StrSubstitute{#1}{.v}{}[\coqfilename]%
+	%\href{\coqdocURLPrefix\coqfilename.html\##2}{\coqicon}%
+  #4%
+	\expandafter\writeauxcoqref\expandafter{\auxcoqcurrentlabel}{}{#1}{#2}{#3}%
+}
+\newcommand{\coqrefcustom}[5]{%
+  #4%
+	\expandafter\writeauxcoqref\expandafter{}{#1}{#2}{#3}{#5}%
+}
+\makeatother
+
+
+\newcommand{\printcoqreferences}{%
+	\ifthenelse{\value{coqreferencecounter}=0}{%
+		\textit{No source references yet.}%
+	}{%
+	\begin{description}[labelsep=1pt]%
+	\coqreferencesbuffer
+	\end{description}%
+	}%
+}
+

@@ -13,6 +13,7 @@
 \newtheorem{theorem}{Theorem}
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
 \newtheorem{assumption}{Assumption}
 \newtheorem{convention}{Convention}
 \newtheorem{observation}{Observation}
@@ -68,6 +69,7 @@
 % elide "on obj/on morphs" distinction in code presentation
 \newunicodechar{₀}{}
 \usepackage{../agda}
+\usepackage{../coqsrcref}
 \usepackage{catchfilebetweentags}
 
 \DeclarePairedDelimiter{\expi}{\lceil}{\rceil}
@@ -83,6 +85,36 @@
 \end{scope}
 \end{tikzpicture}%
 }
+
+\newcommand{\onlineHtmlURL}{%
+https://partiallyapplied.eu/ictfp/%
+}
+\newcommand{\hrefpublicdoc}[2]{%
+  \StrSubstitute{#1}{.}{/}[\agdafilename]%
+  \nicehref{\onlineHtmlURL #1.html\##2}{\agdafilename.agda}%
+}
+
+\newsavebox{\logoagdabox}
+\sbox{\logoagdabox}{%
+  %{\color{black!60}\faGears}%
+  \raisebox{-2pt}{\includegraphics[height=1em]{../logo-agda.pdf}}%
+}
+\newcommand{\clickagdalogo}{%
+  \href{\onlineHtmlURL index.html}{\usebox{\logoagdabox}}%
+}
+\newcommand{\agdaref}[4][]{%
+  % The optional parameter #1 is ignored, but I can't get rid of it (I don't
+  % understand the latex issue):
+  \coqref{#2}{#3}{#4%
+    %\linebreak[3]%
+    %(\hrefpublicdoc{#2}{#3})
+  }{\href{\onlineHtmlURL #2.html\##3}{\usebox{\logoagdabox}}}}
+\newcommand{\agdarefcustom}[4]{%
+  \coqrefcustom{#1}{#2}{#3}{\href{\onlineHtmlURL #2.html\##3}{\usebox{\logoagdabox}}}%
+  {#4%
+  %\linebreak[3]%
+  %(\hrefpublicdoc{#2}{#3})
+  }}
 
 \newcommand{\inj}{\mathsf{in}}
 \newcommand{\C}{{\ensuremath{\mathcal{C}}}}
@@ -115,9 +147,6 @@ We acheive the same result, i.e. a criterion for all coalgebras for an endofunct
 Our criterion is a novel instantiation of the preexisting notion of a locally contractive functor \cite{birkedalFirstStepsSynthetic2012}.
 This instantiation is acheived by enriching \(𝒞^A\) in presheaves over \((A,<)\) using change of base of enrichment along the cofree presheaf functor.
 Our hope is that demonstrating how this preexisting notion can be instantiated for this novel application may lead to a broader adoption of the technique, as well as enabling reuse of all existing known results about locally contractive functors in this setting.
-
-\section{Background}
-\label{sec:background}
 
 \paragraph{Recursive Coalgebras}
 Expressing recursive algorithms using coalgebra-to-algebra morphisms has a long history \cite{CaprettaUV06,jeanninWellfoundedCoalgebrasRevisited2017,taylor99,meijerFunctionalProgrammingBananas1991}.
@@ -175,39 +204,85 @@ The refined \(B\) becomes \(\bar{B}\) (expressed for better comprehensibility in
   \end{pmatrix}
 \]
 The interesting thing to note is the following: The multiset indices in functorial positions are smaller than the result index: \(f(l),f(r) < f(l) \uplus \{p\} \uplus f(r)\).
+
+\paragraph{Intro}\label{sec:intro}
 In particular, that means we are able to define a functorial action of \(F\), \(F_1'\) that, intuitively, takes morphisms \(A → B\) at smaller indices and produces a morphism \(F_0 A → F_0 B\) at the current index, such that \(F_1'\) agrees with \(F_1\). This then allows us to essentially construct a solution to \eqref{fig:coalg-alg-morphism} as an inhabitant of the homset \(I → O\) using well founded recursion. We proceed to make all of these notions formal. For notions of enriched category theory we mostly follow~\cite{weideUnivalentEnrichedCategories2026}.
 
 \paragraph{Enrichment}
+\label{sec:enrichment}
 To talk about an action of a functor \(F\) that isn't \(F_1\), we need the notion of:
-\begin{definition}[Enrichment of a category \(𝒞\) in a monoidal category \(𝒱\), {\cite[Def.~2.2]{weideUnivalentEnrichedCategories2026}}]
-  An enrichment of a category \(𝒞\) in a monoidal category \(𝒱,⊗,I\) consists of the following data:
+\begin{definition}[Enrichment of a category \(𝒞\) in a monoidal category \(𝒱\), {\cite[Def.~2.2]{weideUnivalentEnrichedCategories2026}}\agdaref{Cubical.Categories.Enriched.Enrichment.Base}{Enrichment}{}]
+  An enrichment of a category \(𝒞\) in a monoidal category \((𝒱,⊗,I)\) consists of the following data:
   \begin{itemize}
-  \item for every \(x, y \colon 𝒞\) the external Hom \(ℰ_{X,Y}\), an external identity morphism, sequencing operation, and external counterparts to unitality \& associativity coherences
-  \item for every \(x, y \colon 𝒞\) a bijection \(\expi{-}\colon 𝒞(x,y) ≅ 𝒱[I,ℰ_{X,Y}]\) witnessing that \(𝒞\) and the \emph{enriched category} with objects \(𝒞_0\) and homsets \(𝒱[I,ℰ_{X,Y}]\) are isomorphic as categories.
+  \item for every \(x, y \colon 𝒞\) the external Hom \(ℰ_{X,Y}\), an external identity morphism \& sequencing operation, and external counterparts to unitality \& associativity coherences;
+  \item for every \(x, y \colon 𝒞\) a bijection \(\expi{-}\colon 𝒞(x,y) ≅ 𝒱[I,ℰ_{X,Y}]\) witnessing that \(𝒞\) and the underlying category with objects \(𝒞_0\) and homsets \(𝒱[I,ℰ_{X,Y}]\) of \(CE\) viewed as an \emph{enriched category}~\cite{kellyBasicConceptsEnriched1982} are isomorphic as categories.
   \end{itemize}
 \end{definition}
-\begin{definition}[Enrichment of a functor, {\cite[Def.~2.4]{weideUnivalentEnrichedCategories2026}}]
-  Given categories \(C, D\) and enrichments \(EC, ED\) in a monoidal category \(V\) an \emph{enrichment} of a functor \(F \colon C → D\) is an external functorial action
+\begin{definition}[Enrichment of a functor, {\cite[Def.~2.4]{weideUnivalentEnrichedCategories2026}} \agdaref{Cubical.Categories.Enriched.Enrichment.Functor.Base}{Enrichment}{}]
+  Given categories \(C, D\) and enrichments \(EC, ED\) in a monoidal category \(V\) an \emph{enrichment} of a functor \(F \colon C → D\) in \(EC,ED\) is an external functorial action
   \(F_1' \colon 𝒱[EC.ℰ_{X,Y},ED.ℰ_{F_0 X, F_0 Y}]\), obeying external counterparts to preservation of identities and sequencing, such that \(F_1\) and \(F_1'\) \emph{agree}:
   \[∀ x, y : C_0,\, f : C[x,y].\ ED.\expi{F_1 f} = EC.\expi{f} ; F_1' \]
 \end{definition}
 
 \paragraph{Locally Contractive Functors}
+In the following, let \(V\) be a model of guarded recursive terms \cite[Def.~6.1]{birkedalFirstStepsSynthetic2012}. And categories \(C,D\) with enrichments \(EC, ED\) in \(V\).
+
 \begin{definition}[{\cite[Def.~7.2]{birkedalFirstStepsSynthetic2012}}]
-  Let \(V\) be a model of guarded recursive terms \cite[Def.~6.1]{birkedalFirstStepsSynthetic2012}. Given categories \(C,D\), with enrichments \(EC, ED\) in \(V\), a functor \(F \colon C → D\) is \emph{locally contractive} if it factors as the sequence of the enrichments
-  \[CE \xrightarrow{\mathsf{next}} ▷CE \xrightarrow{F'} ED\]
+  A functor \(F \colon C → D\) with an enrichment \(FE\) in \(EC,ED\) is \emph{locally contractive} if it factors as the sequence of the enrichments
+  \[CE \xrightarrow{\mathsf{next}} ▷CE \xrightarrow{F'} ED.\]
 \end{definition}
 
-\begin{corollary}
-  Let \(V\) be a model of guarded recursive terms, \(C,D\) categories with enrichments \(EC, ED\) in \(V\). A functor is \emph{locally contractive} if it as an enrichment of the sequence of enrichments \(CE \xrightarrow{\mathsf{next}} ▷CE \xrightarrow{F'} ED\), i.e.
+We introduce the following corollary for the special case where one has a functor without a preexisting enrichment and wants its enrichment to be given by the sequence:
+
+\begin{corollary}[\agdaref{Cubical.Categories.Enriched.Enrichment.LocallyContractive}{}]
+  \label{cor1}
+A functor \(F \colon C → D\) is \emph{locally contractive} if it has as enrichment the sequence of enrichments \(CE \xrightarrow{\mathsf{next}} ▷CE \xrightarrow{F'} ED\), i.e.
 \[∀ x, y : C_0,\, f : C[x,y].\ ED.\expi{F_1 f} = EC.\expi{f} ; \mathsf{next} ; F_1' \]
 \end{corollary}
 
+Surprisingly enough to us, as far as we are aware, noone in the literature has stated the following corollary:
 
+\begin{corollary}[\agdaref{Cubical.Categories.Enriched.Enrichment.LocallyContractive}{Hylo}{}]
+  \label{cor2}
+All coalgebras for a locally contractive functor \(F\) are recursive; likewise all algebras are corecursive.
+\end{corollary}
+\begin{proof}[Proof sketch]
+  Note that in \eqref{fig:coalg-alg-morphism}, the functional\footnote{higher-order function} \(H(h) ≔ c ; h ; a\) has type \((F_0 I → F_0 O) → (I → O)\). Local contractivity of \(F\) gives us \(F_1' \colon ▷ (I → O) → (F_0I → F_0O) \). But guarded unique fixed points in \(V\) give us the rule \(\mathrm{Löb} \colon (▷ f → f) → f\). Thus we obtain \(h\) by \(\mathrm{Löb} (F_1' ; H)\)
+\end{proof}
+
+\paragraph{Bridge}
+\label{sec:bridge}
+With Corollaries \ref{cor1} and \ref{cor2} we have the formalisation of our stated goal in \nameref{sec:intro}. To instantiate these to our setting of \(\mathsf{Set}^A\) for the well founded order \((A,<)\), we must choose: \begin{enumerate*}[label=\alph*), itemjoin=~]
+\item a suitable model \(V\) of recursive terms to enrich in;
+\item an enrichment of \(\mathsf{Set}^A\) (we can do better: more generally of \(𝒞^A\) for locally small \(𝒞\)) in \(V\).
+\end{enumerate*}
+For the former, following \cite{stepanenkoSolvingGuardedDomain2025} we chose presheaves over \((A,<)\).
+For the latter, first note that \(𝒞^A\) is enriched in the monoidal category \(\mathsf{Set}^A\) with \(ℰ_{X,Y} ≔ \prod_{a ∈ A} 𝒞[X a, Y a]\). It remains to transport this enrichment over to \(\mathsf{Psh}(A,<)\), which we proceed to do in the following.
 \paragraph{Change of Base}
-
-\paragraph{Example Application to QuickSort}
-
+Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
+\begin{definition}[Lax monoidal functor {\cite[Def.~2.1.1]{cruttwell2008normed}} \agdaref{Cubical.Categories.Monoidal.Functor}{LaxMonoidalFunctor}{}]
+  A functor \(F \colon M → N\) is \emph{lax monoidal} if it has comparison arrows: \begin{itemize*}[itemjoin=~]
+\item \(ε \colon N[J, F I]\), and
+\item \(μ_{X,Y} \colon N[F x ⊗ F Y, F (x * y)]\) agreeing with the unitors and associators of \(M\) and \(N\).
+\end{itemize*}
+\begin{definition}[Preservation of Underlying Categories {\cite[Def.~3.6]{weideUnivalentEnrichedCategories2026}} \agdaref{Cubical.Categories.Monoidal.Functor}{preservesUnderlyingCategories}{}]
+  A lax monoidal functor \(F \colon M → N\) preserves underlying categories if \(\hat{ε}_A ≔ ε ; F_1– \colon M[I,A] → N[J, F A]\) is a bijection.
+\end{definition}
+Spoiler: This requirement is necessary for \(F^*(EC)\) to preserve \(C\) – \(F^*(EC).\expi{–} ≔ EC.\expi{–} ; \hat{ε}\).
+\end{definition}
+\begin{proposition}[Change of Base {\cite[Ex.~3.7]{weideUnivalentEnrichedCategories2026}}\agdaref{Cubical.Categories.Enriched.Enrichment.BaseChange.Base}{BaseChange}{}]
+  Let \(EC\) be an enrichment of category \(C\) in \(M\). Let \(F\colon M → N\) be a lax monoidal functor which preserves underlying categories. We can define an enrichment \(F^*(EC)\) of \(C\) in \(N\) which we call the base-change of \(EC\) along \(F\).
+\end{proposition}
+Returning to our objective, it remains to define a lax monoidal functor which preserves underlying categories from \(\mathsf{Set}^A\) to \(\mathsf{Psh}(A,<)\).
+The functor that does the job is the \emph{cofree presheaf functor}: \(U ⊣ \mathsf{Cofree}\), \(\mathsf{Cofree}(B)(x) ≔ \prod_y \mathsf{Set}[A(x,y),B(y)]\) (here \(A[x,y] = x ≤ y\)).
+\begin{proposition}[\agdaref{Cubical.Categories.Enriched.Enrichment.Instances.Power}{Cᴬ-Psh-Enrichment}{}]
+  \textsf{Cofree} is a lax monoidal functor preserving underlying categories.
+\end{proposition}
+\begin{proof}[Proof sketch]
+  Its lax monoidal structure derives from the fact that as right adjoint it preserves limits. Preservation of underlying categories follows from \(\mathsf{Cofree}\) preserving terminal objects, followed by transposition along the adjunction.
+\end{proof}
+\paragraph{Coda}
+Thus, we find ourselves with with what we wanted from the outset: When working in the power category \(𝒞^A\) for some well founded order \(A,<\), as one does when defining intrinsically correct algorithms, one can express termination of an algorithm defined as a coalgebra-to-algorithm by proving that the functor \(F\) for which it is defined is locally contractive. This procedure is precisely the formal counterpart to what we layed out in \nameref{sec:intro} and elaborated in \nameref{sec:bridge}. The incomplete Agda development accompanying this work is at \url{https://github.com/um-catlab/cubical-categorical-logic/tree/guarded-enriched}
 \bibliographystyle{plain}
 \bibliography{../works}
 
