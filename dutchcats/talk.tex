@@ -1,0 +1,487 @@
+\documentclass{beamer}
+\usefonttheme{professionalfonts}
+\mode<presentation>{
+  \usetheme{Luebeck}
+  \usecolortheme{whale}
+  \useoutertheme{infolines}
+}
+\setbeamertemplate{navigation symbols}{}
+% [Beamer stop slide numbering after some slides - TeX - LaTeX Stack Exchange](https://tex.stackexchange.com/questions/609624/beamer-stop-slide-numbering-after-some-slides)
+\setbeamertemplate{page number in head/foot}[appendixframenumber]
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{mathtools}
+\usepackage{unicode-math}
+\usepackage{tikz}
+\usepackage[absolute,overlay]{textpos}
+\usetikzlibrary{backgrounds,fit,calc,patterns,positioning,arrows.meta,quotes,overlay-beamer-styles,cd}
+\usepackage{forest}
+\usepackage[conor]{../agda}
+\usepackage{catchfilebetweentags}
+\usepackage{amssymb}
+\theoremstyle{remark}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\usepackage[backend=biber,style=authoryear,maxcitenames=4,maxbibnames=10, url=false]{biblatex}
+
+\addbibresource{../works.bib}
+
+\usepackage{qrcode}
+\usepackage{newunicodechar}
+\DeclarePairedDelimiter{\expi}{\lceil}{\rceil}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+%\DeclareUnicodeCharacter{21D2}{\ensuremath{\Rightarrow}}
+\newunicodechar{ℰ}{\ensuremath{\mathscr{E}}}
+\newunicodechar{₀}{\ensuremath{{}_{0}}}
+\newunicodechar{ℕ}{\ensuremath{ℕ}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{↦}{\ensuremath{↦}}
+\newunicodechar{∘}{\ensuremath{∘}}
+\newunicodechar{♯}{\ensuremath{_{\#}}}
+\newunicodechar{ᵢ}{\ensuremath{_i}}
+\newunicodechar{≔}{\ensuremath{≔}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{₁}{\ensuremath{{}_{1}}}
+\newunicodechar{₂}{\ensuremath{{}_{2}}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{≺}{\ensuremath{<}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{⊥}{\ensuremath{\bot}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{↓}{\ensuremath{\downarrow}}
+%% Invisible characters for otherwise clashing definitions.
+\newunicodechar{⇃}{\ensuremath{\!}}
+\newunicodechar{⇂}{\ensuremath{\!}}
+\newunicodechar{↿}{\ensuremath{\!}}
+\newcommand{\sle}{\sqsubseteq} %sort \le
+\newcommand{\sgt}{\sqsupset} %sort \ge
+\newcommand{\inl}{\ensuremath{\mathsf{inl}}}
+\newcommand{\inr}{\ensuremath{\mathsf{inr}}}
+\newcommand{\id}{\ensuremath{\mathsf{id}}}
+\newcommand{\sort}{\mathsf{sort}}
+\newunicodechar{⊒}{\ensuremath{\sgt}}
+\newunicodechar{⊑}{\ensuremath{\sle}}
+\newunicodechar{ₗ}{\ensuremath{_l}}
+\newunicodechar{ᵣ}{\ensuremath{_r}}
+\newunicodechar{⁻}{\ensuremath{^-}}
+\newunicodechar{¹}{\ensuremath{^1}}
+\newunicodechar{∷}{\ensuremath{\mathbin{::}}}
+\newunicodechar{┌}{|\ensuremath{\lceil}}
+\newunicodechar{┐}{\ensuremath{\rceil}|}
+\newunicodechar{₁}{\ensuremath{_1}}
+\newunicodechar{₂}{\ensuremath{_2}}
+\newunicodechar{→}{\ensuremath{\to}}
+\newunicodechar{⸴}{\ensuremath{,}}
+\newunicodechar{ℬ}{\ensuremath{\mathcal{B}\!}}
+\newunicodechar{⊔}{\ensuremath{\sqcup}}
+\newunicodechar{⊓}{\ensuremath{\sqcap}}
+\newunicodechar{⊎}{\ensuremath{\uplus}}
+\newunicodechar{≤}{\ensuremath{≤}}
+\newunicodechar{▸}{\ensuremath{\blacktriangleright}}
+\newfontfamily\cjkfont{NotoSansCJK-Regular.ttc}[FontIndex=0]
+% Use \symbol, not the literal よ, inside the definition.
+% newunicodechar makes よ active, so writing よ there again would recurse forever.
+\newunicodechar{よ}{{\text{\cjkfont\symbol{"3088}}}}
+%%%%
+% elide "on obj/on morphs" distinction in code presentation
+\newunicodechar{₀}{}
+
+
+\tikzset{input/.style={circle,draw=red!50,fill=red!20,thick,
+inner sep=0pt,minimum size=1cm}, output/.style={circle,draw=blue!50,fill=blue!20,thick,
+inner sep=0pt,minimum size=1cm}}
+
+% [beamer - Depth first step by step construction on forest tree - TeX - LaTeX Stack Exchange](https://tex.stackexchange.com/questions/489718/depth-first-step-by-step-construction-on-forest-tree?rq=1)
+\tikzset{
+    invisible/.style={opacity=0,text opacity=0},
+    visible on/.style={alt=#1{}{invisible}},
+    alt/.code args={<#1>#2#3}{%
+      \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change the path
+    },
+    %label visible on/.code={\tikzset{every label/.append style={visible on=#1}}}
+}
+\forestset{
+  visible on/.style={
+    for tree={
+      /tikz/visible on={#1},
+      edge+={/tikz/visible on={#1}}}}
+  }
+
+
+\forestset{
+  ADT/.style={
+    for tree={
+      font={\fontsize{9.5pt}{9.5pt}\ttfamily},
+      % https://www.dickimaw-books.com/latex/novices/html/fontstyle.html
+    }
+  },
+}
+
+\tikzset{
+  algorithm/.style={
+    algorithm line/.style={
+      inner sep=0pt,
+    },
+    algorithm line label/.style={
+    },
+    algorithm split/.style={
+      fill=red!30!white,
+      draw=red!30!black,
+    },
+    striped line/.style={
+      draw=none,
+      pattern=north east lines,
+      pattern color=##1,
+    },
+    boxed line/.style={
+      draw=##1,
+      line width=2pt,
+      inner sep=-1pt,
+      %pattern=crosshatch dots,
+      %pattern color=##1,
+    },
+    line-orange/.style={
+      draw=orange!70!black,
+      pattern=north east lines,
+      pattern color=orange!70!white,
+    },
+    line-blue/.style={
+      draw=blue!70!black,
+      pattern=north west lines,
+      pattern color=blue,
+    },
+    line-yellow/.style={
+      draw=yellow!70!black,
+      pattern=north east lines,%crosshatch dots,
+      pattern color=yellow!70!white,
+    },
+    line-green/.style={
+      draw=green!70!black,
+      pattern=north west lines,%horizontal lines,
+      pattern color=green!70!white,
+    },
+    line-violet/.style={
+      draw=purple!70!black,
+      pattern=north east lines,
+      pattern color=purple!70!white,
+    },
+  },
+}
+
+
+\usepackage{newunicodechar}
+\usepackage{graphicx}
+
+\title[Intrinsically Correct Total FP]{Intrinsically correct \& total functional programming using guarded recursion}
+\author[Alexandru, Schaefer, New]{
+  Cass Alexandru\inst{1} \and Steven Schaefer\inst{2} \and Max New\inst{2}
+}
+\institute[R(PT)U \& UM]{%
+\inst{1}RPTU Kaiserslautern-Landau \& Radboud University Nijmegen
+\and
+\inst{2} University of Michigan
+}
+\date{2026-10-27}
+\renewcommand<>{\emph}[1]{{\only#2{\bfseries}#1}}
+\renewcommand{\hom}[3]{\ensuremath{#1\left(#2,#3\right)}}
+\newcommand{\ihom}[2]{\ensuremath{\left[#1,#2\right]}}
+\begin{document}
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+  \frametitle{Overview}
+  \begin{itemize}
+  \item Recent progress in intrinsically correct total functional programming \parencite{alexandruIntrinsicallyCorrectAlgorithms2026}
+  \item Achieved with the novel notion of a \emph{well founded functor}
+  \item \emph{Gap}: similarities to \emph{locally contractive functors} \parencite{birkedalFirstStepsSynthetic2012}
+  \item \emph{Question}: Can we replace wff with lcf? \emph{Answer}: Yes
+  \item Same application, stronger foundation
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Technical Overview}
+  \begin{itemize}
+  \item Locally contractive functors give rise to \emph{hylomorphisms}, which describe total functional algorithms
+  \item To instantiate lcf, we need an \emph{enrichment} of our category (indexed datatypes for intrinsically correct programs, corresponding to \emph{families}) in \emph{presheaves}
+  \item We go there and back again: Having instantiated the machinery, we expose a simpler interface for guarded recursion which uses only the \emph{family enrichment of families}
+  \end{itemize}
+\end{frame}
+
+\section{Motivation}
+
+\begin{frame}[fragile]
+  \frametitle{QuickSort as a Coalgebra-to-Algebra Morphism}
+\begin{columns}
+  \begin{column}[t]{.7\textwidth}
+    \begin{tikzcd}[ampersand replacement=\&,
+every arrow/.append style={mapsto},column sep=2cm]
+ {(i_{≤ p}, p, i_{> p})} \arrow[r, "\mathsf{sort} \times \mathrm{id}\times \mathsf{sort}"] \& {(\mathsf{sort}(i_{≤ p}), p, \mathsf{sort}(i_{> p}))} \arrow[d, "\mathsf{concat}"] \\
+ip \arrow[u,"\mathsf{partition}"] \arrow[r,"\mathsf{sort}"] \&  {\mathsf{sort}(i_{≤ p})\, p\, \mathsf{sort}(i_{> p})}
+\end{tikzcd}
+\end{column}\hfill
+\begin{column}[t]{.3\textwidth}
+\begin{tikzcd}
+F_0I \arrow[r, "F_1h"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{\refstepcounter{equation}(\theequation)\label{eq:square}} & F_0O \arrow[d, "a"] \\
+I \arrow[u,"c"] \arrow[r,"h"] &  O
+\end{tikzcd}
+  \end{column}
+\end{columns}
+\begin{itemize}
+\item for \(\mathsf{partition}\): \(F ≔ B \) for \(B X ≔ 1 + X × A × X\), \(\quad I ≔ A^*\).
+\item A c2a-morphism \(h\) is called a \emph{hylomorphism} if it is the \emph{unique} c2a-morphism making \eqref{eq:square} commute.
+\item NB: In a non-total programming language, \texttt{h := c ; F1 h ; a} \emph{is} already a definition. We want to recover a similar definition scheme in a \emph{total} language.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Pars pro Toto : Total from Partial Correctness}
+  \begin{itemize}
+  \item The type \(A^* → 1 + A^* × A × A^*\) for \(\mathsf{partition}\) is \emph{too coarse!}
+  \item As \cite{AlexandruCRW25}: Move to \(\mathsf{Set}/{ℳ\!A}\)
+  \end{itemize}
+  \vspace{\baselineskip}%
+\[
+  \overline{B} \begin{pmatrix}
+    X \\
+    f
+  \end{pmatrix}
+  ≔
+  \begin{pmatrix}
+    1 \\
+    * ↦ \emptyset
+  \end{pmatrix}
+  +
+  \begin{pmatrix}
+    \{(l,p,r) ∈ X × A × X \mid \dots\} \\ %
+    (l, p, r) ↦ f(l) \uplus \{p\} \uplus f(r)
+  \end{pmatrix}
+\]
+\begin{itemize}
+\item Refined type of partition: \(\mathsf{Set}/{ℳ\!A}[(A^*, \mathsf{toBag}),\overline{B}(A^*, \mathsf{toBag})]\)
+\item Note: The multiset indices in functorial positions are smaller than the input index: \(f(l),f(r) < f(l) \uplus \{p\} \uplus f(r)\)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Approach}
+  \begin{itemize}
+  \item Observation: \enquote{indices in functorial positions are smaller than the input index}
+  \end{itemize}
+  \begin{equation*}
+\begin{tikzcd}
+F_0I \arrow[r, "F_1h"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{(1)} & F_0O \arrow[d, "a"] \\
+I \arrow[u,"c"] \arrow[r,"h"] &  O
+\end{tikzcd}    
+  \end{equation*}
+  \begin{itemize}
+  \item \(⇒\) we could construct a solution to (1) \enquote{as an inhabitant of the homset using well founded recursion}!
+\item Next: How this is \emph{made formal}. We begin with moving from Hom-\emph{sets} to Hom-\emph{objs} for some category with the requisite structure for constructing an inhabitant using well founded recursion
+  \end{itemize}
+\end{frame}
+
+% we can encode the correctness by indexing over the contents of the list…
+\section{Background}
+
+\begin{frame}[fragile]
+  \frametitle{Enriched Categories \& Enrichment}
+ Fix a set of objects \(C_0\) and a monoidal category \((V,⊗,𝟙)\).
+\begin{definition}[Enriched category]
+  \begin{itemize}
+  \item for every \(x, y \colon C_0\) the internal Hom \(\ihom{X}{Y}\);
+  \item an internal identity morphism \(\mathrm{id}_X \colon \hom{V}{𝟙}{\ihom{X}{X}}\) \& sequencing operation \(\hom{V}{\ihom{X}{Y}⊗\ihom{Y}{Z}}{\ihom{X}{Z}}\);
+  \item internal counterparts to unitality \& associativity coherences
+  \end{itemize}
+\end{definition}
+\begin{itemize}
+\item For an enriched category \(C'\) there is the \emph{underlying} plain (i.e. \(\mathsf{Set}\)-enriched) category with \(ΓC'[X,Y] ≔ \hom{V}{𝟙}{\ihom{X}{Y}}\)
+\item But we're starting \emph{out} with a plain category!
+\end{itemize}
+\begin{definition}[Enrichment of a category \(C\)]
+  \begin{itemize}
+  \item same data \& laws as above;
+  \item \(C ≅ ΓC'\), in particular \(\expi{-}\colon \hom{C}{X}{Y} ≅ \hom{V}{𝟙}{\ihom{X}{Y}}\)
+  \end{itemize}
+\end{definition}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Families enriched in Families}
+  \begin{itemize}
+  \item Families \((\mathsf{Set}^{C_0})\) are Cartesian monodial, inheriting that structure pointwise from \(\mathsf{Set}\)
+  \item \(𝟙 = \prod_{c ∈ C_0} 𝟙_{\mathsf{Set}}\)
+  \item \(\ihom{X}{Y} c = \hom{\mathsf{Set}}{X c }{Y c}\)
+  \item \(\hom{\mathsf{Set}^{C_0}}{X }{Y} = \prod_{c ∈ C_0}\hom{\mathsf{Set}}{X c }{Y c} ≅ \prod_{c ∈ C_0}\hom{\mathsf{Set}}{𝟙_{\mathsf{Set}}}{\hom{\mathsf{Set}}{X c }{Y c}} = \hom{\mathsf{Set}^{C_0}}{𝟙 }{\ihom{X}{Y}} \)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Enrichment of a Functor}
+\begin{definition}[Enrichment of a Functor]
+  Given:
+  \begin{itemize}
+  \item categories \(C, D\) with enrichments \(EC = (\ihom{-}{-},\expi{-})\) and \(ED = (\ihom{-}{-}',\expi{-}')\) in monoidal category \(V\);
+  \item a functor \(F \colon C → D\)
+  \end{itemize}
+   An \emph{enrichment} of \(F\) in \(EC,ED\) is an internal functorial action
+   \[F_1' \colon \hom{V}{\ihom{X}{Y}}{\ihom{F_0 X}{F_0 Y}'}\]
+   \vspace{-1\baselineskip{}}
+   \begin{itemize}
+   \item obeying internal counterparts to preservation of id and comp.;
+   \item and such that \(F_1\) and \(F_1'\) \emph{agree}: (\(\expi{-}\colon \hom{C}{X}{Y} ≅ \hom{V}{𝟙}{\ihom{X}{Y}}\))
+   \end{itemize}
+  \[∀ X, Y : C_0,\, f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; F_1' \]
+\end{definition}  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Locally Contractive Functors}
+  \begin{definition}
+    Given:
+  \begin{itemize}
+  \item \(V\) a \enquote{model of guarded recursive terms}
+  \item Categories \(C,D\) with enrichments \((EC,\expi{-}), (ED,\expi{-}')\) in \(V\)
+  \item Functor \(F \colon C → D\)
+  \item An enriched functor \(F' \colon ▸EC → ED\) with \(F_0\) as object map
+  \end{itemize}
+    \(F\) is \emph{locally contractive} if it has as enrichment the sequence of enrichments \(EC \xrightarrow{\mathsf{next}} ▸EC \xrightarrow{F'} ED\), i.e.
+\[∀ x, y : C_0,\, f : \hom{C}{x}{y}.\ \expi{F_1 f}' = \expi{f} ; \mathsf{next} ; F_1' \]
+\end{definition}
+\begin{itemize}
+\item NB: This is actually a corollary of the normal definition, for \(F\) with no preexisting enrichment.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{the boundary of the representable: \(\mathsf{PSh}(A,<)\) as a model of guarded recursive terms}
+  Need : \(\mathsf{▸}, \mathsf{next}, \mathrm{Löb}\)
+  \begin{itemize}
+  \item \(↓ i = \{ j ≤ i\}. (↓ i) ≔ \hom{A}{–}{i} = よ i\). \(↡ i ≔ \{ j < i \}\)
+  \item \(▸ X i = \mathrm{lim}_{j<i} X j = \hom{\mathsf{PSh}(A)}{∂よ i }{X}\)
+  \item \(\mathsf{next}\colon \hom{\mathsf{Endo}(\mathsf{PSh}(A))}{\mathsf{Id}}{▸}\)
+    %, \(\mathsf{next} (X , \mathsf{restrX}_{{j ≤ i} \colon \hom{\mathsf{Set}}{X i}{X j}}) i \colon \hom{\mathsf{Set}}{(↡ i) j }{X j }\)
+  \item \(\mathsf{next}\) given by functoriality of the presheaf
+  \item \(\mathrm{Löb}:\) for \(H \colon \hom{\mathsf{PSh}(A)}{▸ \ihom{X}{Y}}{\ihom{X}{Y}}\) \(\mathrm{Löb}(H) \colon \hom{\mathsf{PSh}(A)}{𝟙}{\ihom{X}{Y}}\) s.t. \(\mathrm{Löb}H = \mathrm{Löb}H ; \mathsf{next} ; H\)
+  \item \(\mathrm{Löb}\) given by well founded induction
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Locally Contractive Functors give Hylomorphisms}
+  \framesubtitle{Proof sketch} % Throw out 90% of the symbols
+  \begin{columns}
+\begin{column}[t]{.3\textwidth}
+\begin{tikzcd}
+F_0I \arrow[r,dashed,"1?"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{(1)} & F_0O \arrow[d, "a"] \\
+I \arrow[u,"c"] \arrow[r,dashed,"0?"] &  O
+\end{tikzcd}
+\end{column}
+\begin{column}{.7\textwidth}
+  Constraints:
+  \begin{enumerate}
+  \item \(1? = F_1 0?\)
+  \item \(0? = c ; 1? ; a\)
+  \end{enumerate}
+\end{column}
+\end{columns}
+\begin{itemize}
+\item Note that in \eqref{eq:square}, the functional \(H(h) ≔ c ; h ; a\) has type \((F_0 I → F_0 O) → (I → O)\).
+\item Local contractivity of \(F\) gives us \(F_1' \colon ▸ (I → O) → (F_0I → F_0O) \).
+\item Constraint 1 is given by \(F_1'\) agreeing with \(F_1\).
+\item \(\mathrm{Löb} \colon (▸ \ihom{I}{O} → \ihom{I}{O}) → \ihom{I}{O}\) gives us \(0?\) by \(\mathrm{Löb} (F_1' ; H)\).
+\item Constraint 2 follows from using \(\mathrm{Löb}\).
+\end{itemize}
+\end{frame}
+
+\section{Instantiation}
+
+\begin{frame}
+  \frametitle{Change of Base of Enrichment}
+Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
+\begin{definition}[Lax monoidal functor]
+  A functor \(F \colon M → N\) is \emph{lax monoidal} if it has comparison arrows:
+  \begin{itemize}
+\item \(ε \colon \hom{N}{J}{F I}\), and
+\item \(μ_{X,Y} \colon \hom{N}{F x ⊗ F Y}{F (x * y)}\) agreeing with the unitors and associators of \(M\) and \(N\).
+\end{itemize}
+\end{definition}
+
+\begin{proposition}[Change of Base]
+  Let \(EC= (\ihom{-}{-},\dots)\) be an enriched category for \(C_0\) in \(M\). Let \(F\colon M → N\) be a lax monoidal functor. We can define an enriched category \(F^*(EC)\) for \(C_0\) in \(N\) called the base-change of \(EC\) along \(F\) with \(\ihom{X}{Y} = F (\ihom{X}{Y})\).
+\end{proposition}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Families Enriched in Presheaves}
+  \begin{itemize}
+  \item We already saw families enriched in families
+  \item To enrich them in Presheaves, we need a lax monoidal functor \(\mathsf{Fam}(A) → \mathsf{PSh}(A)\)
+  \item The functor that does the job is the \emph{cofree presheaf functor}: \(U ⊣ \mathsf{Cofree}\), \(\mathsf{Cofree}(B)(x) ≔ \prod_y \hom{\mathsf{Set}}{\hom{A}{y}{x}}{B(y)} = \prod_{y ≤ x} B(y)\)
+  \item lax monoidal structure derives from RAPL
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Families are Enough: There and Back Again}
+  % we have later at home
+  \begin{itemize}
+  \item We can define a version of \(▸\) for families by \(▸' ≔ U ∘ ▸ ∘ \mathsf{Cofree}\)
+  \item Have the enrichment of families in families with internal homs \(ℰ\)
+  \item for lcf, the contractive action of \(F\) lives in \(\hom{\mathsf{Psh}(A)}{▸ (\mathsf{Cofree}\, \ihom{X}{Y})}{\mathsf{Cofree}\, \ihom{FX}{FY}}\)
+  \item \(≅\langle  \) transpose this homset along \(U ⊣ \mathsf{Cofree}\)! \(\rangle\)
+  \item \(\hom{\mathsf{Fam}(A)}{U ▸ \mathsf{Cofree}\, \ihom{X}{Y}}{\ihom{FX}{FY}} = \hom{\mathsf{Fam}(A)}{▸' \ihom{X}{Y}}{\ihom{FX}{FY}}\)
+  \item The agreement condition can be similarly ported to the setting of families only
+  \item This yields an expression of lcf for enrichment in families
+  \item Transposed along \(U ⊣ \mathsf{Cofree}\), this is equivalent to the usual lcf
+  \end{itemize}
+\end{frame}
+
+\section{Outlook}
+
+% \begin{frame}
+%   \frametitle{Related Work}
+%   \begin{itemize}
+%   \item Advantages of lcf over wff:
+%     \begin{itemize}
+%     \item Consolidates the research landscape
+%     \item Some technical improvements that make the category theory agree exactly with the provided library for writing intrinsically correct \& total algorithms while requiring fewer theorems as premise
+%     \item By instantiating an existing notion we:
+%       \begin{itemize}
+%       \item make this new application more accessible to those already familiar with lcf;
+%       \item profit from using instantiations of existing results.
+%       \end{itemize}
+%     \end{itemize}
+%   \end{itemize}
+% \end{frame}
+    %   \begin{itemize}
+    % \item Novel instantiation of lcf on \(𝒞^A\), for \((A, <)\) a well founded order
+    % \item all coalgebras for a lcf are recursive (corollary of known result) \(⇒\) usable for same applications as wff
+    % \item instantiation achieved by an \emph{enrichment} of \(𝒞^A\) in \(\mathsf{PSh}(A,<)\)
+    % \item Families are enough: Enrichment in families and a new condition \enquote{lc-Fam} sufficient for lcf
+    % \end{itemize}
+
+\begin{frame}
+  \frametitle{Conclusion}
+  \begin{itemize}
+  \item Novel application of locally contractive functors to total functional programming
+  \item Can be used \enquote{behind the scenes} as a theoretical underpinning while the programmer need only work in the setting of indexed datatypes (families)
+  \item Illustrates an interesting novel usecase for lcf in a category which is not self-enriched
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{TODOs}
+  \begin{itemize}
+  \item Actually see which existing results about lcf are \emph{actually} useful to instantiate for applications
+  \item In particular: Can we use composition theorems to reduce client obligations? Famously local contractivity as is closed under composition with enriched functors
+  \item See whether solving domain equations using lcf is also useful in this setting
+  \item Technical: Currently we're switching back between enriched categories \& enrichments because some lax monoidal functors do not preserve underlying categories. Need to make this more elegant
+  \end{itemize}
+\end{frame}
+
+\end{document}
