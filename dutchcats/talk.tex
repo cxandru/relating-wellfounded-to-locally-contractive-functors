@@ -215,7 +215,7 @@ inner sep=0pt,minimum size=1cm}}
 \section{Motivation}
 
 \begin{frame}[fragile]
-  \frametitle{QuickSort as a Coalgebra-to-Algebra Morphism}
+  \frametitle{QuickSort as a Coalgebra-to-Algebra Morphism\footnote{due to \cite{CaprettaUV06}}}
 \begin{columns}
   \begin{column}[t]{.7\textwidth}
     \begin{tikzcd}[ampersand replacement=\&,
@@ -274,8 +274,8 @@ I \arrow[u,"c"] \arrow[r,"h"] &  O
   \end{itemize}
   \begin{equation*}
 \begin{tikzcd}
-F_0I \arrow[r, "F_1h"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{(1)} & F_0O \arrow[d, "a"] \\
-I \arrow[u,"c"] \arrow[r,"h"] &  O
+F_0I \arrow[r, "F_1{h\mid_{<i}}"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{(1)} & F_0O \arrow[d, "a"] \\
+I \arrow[u,"c"] \arrow[r,"h_i"] &  O
 \end{tikzcd}    
   \end{equation*}
   \begin{itemize}
@@ -373,28 +373,18 @@ I \arrow[u,"c"] \arrow[r,"h"] &  O
 
 \begin{frame}[fragile]
   \frametitle{Locally Contractive Functors give Hylomorphisms}
-  \framesubtitle{Proof sketch} % Throw out 90% of the symbols
-  \begin{columns}
-\begin{column}[t]{.3\textwidth}
-\begin{tikzcd}
-F_0I \arrow[r,dashed,"1?"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{(1)} & F_0O \arrow[d, "a"] \\
-I \arrow[u,"c"] \arrow[r,dashed,"0?"] &  O
-\end{tikzcd}
-\end{column}
-\begin{column}{.7\textwidth}
-  Constraints:
-  \begin{enumerate}
-  \item \(1? = F_1 0?\)
-  \item \(0? = c ; 1? ; a\)
-  \end{enumerate}
-\end{column}
-\end{columns}
+  \framesubtitle{Functional Programmer Proof sketch} % Throw out 90% of the symbols
+    \begin{equation*}
+      \begin{tikzcd}
+        F_0I \arrow[r,dashed,"1?"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{(1)} & F_0O \arrow[d, "a"] \\
+        I \arrow[u,"c"] \arrow[r,dashed,"0?"] &  O
+      \end{tikzcd}
+    \end{equation*}
 \begin{itemize}
 \item Note that in \eqref{eq:square}, the functional \(H(h) ≔ c ; h ; a\) has type \((F_0 I → F_0 O) → (I → O)\).
 \item Local contractivity of \(F\) gives us \(F_1' \colon ▸ (I → O) → (F_0I → F_0O) \).
-\item Constraint 1 is given by \(F_1'\) agreeing with \(F_1\).
-\item \(\mathrm{Löb} \colon (▸ \ihom{I}{O} → \ihom{I}{O}) → \ihom{I}{O}\) gives us \(0?\) by \(\mathrm{Löb} (F_1' ; H)\).
-\item Constraint 2 follows from using \(\mathrm{Löb}\).
+\item Putting them together we get \(▸ (I → O) \xrightarrow{F_1'} (F_0I → F_0O) \xrightarrow{H} (I → O) \)
+\item Applying \(\mathrm{Löb} \colon (▸ \ihom{I}{O} → \ihom{I}{O}) → \ihom{I}{O}\) gives us \(\mathrm{Löb} (F_1' ; H) \colon (I → O)\).
 \end{itemize}
 \end{frame}
 
@@ -431,7 +421,7 @@ Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
   % we have later at home
   \begin{itemize}
   \item We can define a version of \(▸\) for families by \(▸' ≔ U ∘ ▸ ∘ \mathsf{Cofree}\)
-  \item Have the enrichment of families in families with internal homs \(ℰ\)
+  \item Have the enrichment of families in families with internal homs \(\ihom{-}{-}\)
   \item for lcf, the contractive action of \(F\) lives in \(\hom{\mathsf{Psh}(A)}{▸ (\mathsf{Cofree}\, \ihom{X}{Y})}{\mathsf{Cofree}\, \ihom{FX}{FY}}\)
   \item \(≅\langle  \) transpose this homset along \(U ⊣ \mathsf{Cofree}\)! \(\rangle\)
   \item \(\hom{\mathsf{Fam}(A)}{U ▸ \mathsf{Cofree}\, \ihom{X}{Y}}{\ihom{FX}{FY}} = \hom{\mathsf{Fam}(A)}{▸' \ihom{X}{Y}}{\ihom{FX}{FY}}\)
