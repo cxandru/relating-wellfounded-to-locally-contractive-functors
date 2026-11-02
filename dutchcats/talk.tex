@@ -11,6 +11,11 @@
 \usepackage[english]{babel}
 \usepackage{csquotes}
 \usepackage{mathtools}
+
+\usepackage{calc}      % \widthof
+% \samebox{reference}{content}: content centred in a box as wide (and tall) as reference
+\newcommand{\samebox}[2]{\mathmakebox[\widthof{$#1$}]{\vphantom{#1}#2}}
+
 \usepackage{unicode-math}
 \usepackage{tikz}
 \usepackage[absolute,overlay]{textpos}
@@ -199,6 +204,7 @@ inner sep=0pt,minimum size=1cm}}
 \renewcommand<>{\emph}[1]{{\only#2{\bfseries}#1}}
 \renewcommand{\hom}[3]{\ensuremath{#2 → #3}}
 \newcommand{\ihom}[3][]{\ensuremath{#2 ⇒#1 #3}}
+\newcommand{\glob}[3]{\ensuremath{Γ\left(#3\right)}}
 \begin{document}
 \begin{frame}
   \titlepage
@@ -284,15 +290,35 @@ I \arrow[u,"c"] \arrow[r,"h"] &  O
   \begin{itemize}
   \item Observation: \enquote{indices in functorial positions are smaller than the input index}
   \end{itemize}
+  \begin{columns}
+    \begin{column}{0.3\textwidth}
   \begin{equation*}
 \begin{tikzcd}
-F_0I \arrow[r, "F_1{h\mid_{<i}}"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{(1)} & F_0O \arrow[d, "a"] \\
-I \arrow[u,"c"] \arrow[r,"h_i"] &  O
-\end{tikzcd}    
+FI \arrow[r, "F{h\alert{\mid_{<i}}}"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{(1)} & FO \arrow[d, "a_i"] \\
+I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
+\end{tikzcd}
   \end{equation*}
+\end{column}
+\begin{column}{0.3\textwidth}
+  \begin{align*}
+    h_{\alert{i}} &= c_i ; (F (h\alert{|_{<i}}))_i ; a_i
+  \end{align*}
+\end{column}
+  \end{columns}
+
   \begin{itemize}
   \item \(⇒\) we could construct a solution to (1) \enquote{as an inhabitant of the homset using well founded recursion}!
 \item Next: How this is \emph{made formal}. We begin with moving from Hom-\emph{sets} to Hom-\emph{objs} for some category with the requisite structure for constructing an inhabitant using well founded recursion
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Plan}
+  \begin{itemize}
+  \item \emph{Enrichment of a Category}: Give hom objects the structure we need to do \(\dots\)
+  \item \emph{Guarded recursion}: a way to construct hom objects using well founded recursion.
+  \item \emph{Enrichment of a Functor}: Notion need to express \(\dots\)
+  \item \emph{Locally Contractive Functors}: Functors which give rise to hylomorphisms via guarded recursion.
   \end{itemize}
 \end{frame}
 
@@ -310,13 +336,12 @@ I \arrow[u,"c"] \arrow[r,"h_i"] &  O
   \end{itemize}
 \end{definition}
 \begin{itemize}
-\item For an enriched category \(C'\) there is the \emph{underlying} plain (i.e. \(\mathsf{Set}\)-enriched) category with \(ΓC'[X,Y] ≔ \hom{V}{𝟙}{\ihom{X}{Y}}\)
-\item But we're starting \emph{out} with a plain category!
+\item Denote with \(Γ X ≔ \hom{V}{𝟙}{X}; Γ \colon V → \mathsf{Set}\). Then for enriched \(C'\) there is the \emph{underlying} plain (i.e. \(\mathsf{Set}\)-enriched) category \((Γ^*C', \ihom[']{}{})\) with \(\ihom[']{X}{Y} ≔ \hom{V}{𝟙}{(\ihom{X}{Y})} = \glob{V}{𝟙}{\ihom{X}{Y}}\)
 \end{itemize}
 \begin{definition}[Enrichment of a category \(C\)]
   \begin{itemize}
   \item same data \& laws as above;
-  \item \(C ≅ ΓC'\), in particular \(\expi{-}\colon \hom{C}{X}{Y} ≅ \hom{V}{𝟙}{\ihom{X}{Y}}\)
+  \item \(C ≅ ΓC'\), in particular \(\expi{-}\colon \hom{C}{X}{Y} ≅ \glob{V}{𝟙}{\ihom{X}{Y}}\)
   \end{itemize}
 \end{definition}
 \end{frame}
@@ -324,10 +349,52 @@ I \arrow[u,"c"] \arrow[r,"h_i"] &  O
 \begin{frame}
   \frametitle{Families enriched in Families}
   \begin{itemize}
-  \item Families \((\mathsf{Set}^{C_0})\) are Cartesian monodial, inheriting that structure pointwise from \(\mathsf{Set}\)
-  \item \(𝟙 = \prod_{c ∈ C_0} 𝟙_{\mathsf{Set}}\)
-  \item \(\ihom{X}{Y} c = \hom{\mathsf{Set}}{X c }{Y c}\)
-  \item \(\hom{\mathsf{Set}^{C_0}}{X }{Y} = \prod_{c ∈ C_0}\hom{\mathsf{Set}}{X c }{Y c} ≅ \prod_{c ∈ C_0}\hom{\mathsf{Set}}{𝟙_{\mathsf{Set}}}{\hom{\mathsf{Set}}{X c }{Y c}} =\\ \hom{\mathsf{Set}^{C_0}}{𝟙 }{\ihom{X}{Y}} \)
+  \item The Category of Families \((\mathsf{Set}^{C_0})\) is Cartesian monodial, inheriting that structure pointwise from \(\mathsf{Set}\)
+  \item In particular, \(𝟙 = \prod_{c ∈ C_0} 𝟙_{\mathsf{Set}}\)
+  \item We consider the enrichment of families in families:
+    \begin{itemize}
+    \item The internal hom: \((\ihom{X}{Y}) c = \hom{\mathsf{Set}}{X c }{Y c}\)
+    \item The agreement \(\hom{C}{X}{Y} ≅ \glob{V}{𝟙}{\ihom{X}{Y}} (= \hom{V}{𝟙}{\ihom{X}{Y}})\): %between external and internal homs
+    \end{itemize}
+  \end{itemize}
+\[\hom{\mathsf{Set}^{C_0}}{X }{Y} = \prod_{c ∈ C_0}\hom{\mathsf{Set}}{X c }{Y c} ≅ \prod_{c ∈ C_0}\hom{\mathsf{Set}}{𝟙_{\mathsf{Set}}}{\hom{\mathsf{Set}}{X c }{Y c}} = \hom{\mathsf{Set}^{C_0}}{𝟙}{\ihom{X}{Y}}\]
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{A Model of Guarded Recursive Terms}
+  \def\Hom{\samebox{\ihom{X}{Y}}{\alt<2->{P}{\ihom{X}{Y}}}}%
+  Given:
+  \begin{itemize}
+  \item \textcolor<2->{lightgray}{A Category \(C\) enriched in Monoidal Category \(E\)}
+  \item An endofunctor \(▸ \colon E → E\)
+  \item A nat. trans. \(\mathsf{next} \colon \hom{[E,E]}{\mathsf{Id}}{▸}\)
+  \end{itemize}
+   \(E\) is a model of guarded recursive terms if:
+   \[ ∀ H \colon \hom{E}{▸ (\Hom)}{(\Hom)}.\ ∃!\, \mathrm{Löb}H \colon \glob{E}{𝟙}{\Hom}\text{ such that:} \]
+   \begin{equation*}
+\begin{tikzcd}
+(\Hom) \arrow[r, "\mathsf{next}"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{\refstepcounter{equation}(\theequation)\label{eq:lob}} & ▸ (\Hom) \arrow[d, "H"] \\
+𝟙 \arrow[u,"\mathrm{Löb}H"] \arrow[r,"\mathrm{Löb}H"] &  (\Hom)
+\end{tikzcd}
+\end{equation*}
+\visible<1>{%
+In particular: \(\expi{\mathrm{Löb}H} \colon \hom{C}{X}{Y}\).
+
+I.e. \(\mathrm{Löb}\) gives a guarded fixpoint for internal homs.
+}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{\(\mathsf{PSh}(A,<)\) as a model of guarded recursive terms}
+  \begin{itemize}
+  \item \(▸ \colon \mathsf{PSh}(A,<) → \mathsf{PSh}(A,<) \)\\
+    \(▸ P i = \mathrm{lim}_{j<i} P j\)
+  \item \(\mathsf{next}\colon \hom{\mathsf{Endo}(\mathsf{PSh}(A))}{\mathsf{Id}}{▸}\)\\
+    \(\mathsf{next}\) given by functoriality of the presheaf
+  \item \(\mathrm{Löb}\) given by well founded recursion:
+    \(∀ H \colon \idxbox{oiBlue}{\hom{E}{▸ P}{P}}.\ ∃!\, \mathrm{Löb}H \colon \idxbox{oiOrange}{\hom{E}{𝟙}{P}}\dots\)\\
+    % \mathrm{Löb}H = \mathrm{Löb}H; \mathsf{next} ; H
+    \(\idxbox{oiBlue}{(∀ i .\, (∀ j < i.\, P j → P i) → P i)} → \idxbox{oiOrange}{∀ i .\, P i}\)
   \end{itemize}
 \end{frame}
 
@@ -336,7 +403,7 @@ I \arrow[u,"c"] \arrow[r,"h_i"] &  O
 \begin{definition}[Enrichment of a Functor]
   Given:
   \begin{itemize}
-  \item categories \(C, D\) with enrichments \(EC = (\ihom{-}{-},\expi{-})\) and \(ED = (\ihom[']{-}{-},\expi{-}')\) in monoidal category \(V\);
+  \item categories \(C, D\) with enrichments \(EC = (\ihom{}{},\expi{-})\) and \(ED = (\ihom[']{}{},\expi{-}')\) in monoidal category \(V\);
   \item a functor \(F \colon C → D\)
   \end{itemize}
    An \emph{enrichment} of \(F\) in \(EC,ED\) is an internal functorial action
@@ -344,7 +411,7 @@ I \arrow[u,"c"] \arrow[r,"h_i"] &  O
    \vspace{-1\baselineskip{}}
    \begin{itemize}
    \item obeying internal counterparts to preservation of id and comp.;
-   \item and such that \(F_1\) and \(F_1'\) \emph{agree}: (\(\expi{-}\colon \hom{C}{X}{Y} ≅ \hom{V}{𝟙}{\ihom{X}{Y}}\))
+   \item and such that \(F_1\) and \(F_1'\) \emph{agree}: (\(\expi{-}\colon \hom{C}{X}{Y} ≅ \glob{V}{𝟙}{\ihom{X}{Y}}\))
    \end{itemize}
   \[∀ X, Y : C,\, f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; F_1' \]
 \end{definition}  
@@ -355,33 +422,18 @@ I \arrow[u,"c"] \arrow[r,"h_i"] &  O
   \begin{definition}
     Given:
   \begin{itemize}
-  \item \(V\) a \enquote{model of guarded recursive terms}
+  \item \(V\) a model of guarded recursive terms
   \item Categories \(C,D\) with enrichments \((EC,\expi{-}), (ED,\expi{-}')\) in \(V\)
   \item Functor \(F \colon C → D\)
   \item An enriched functor \(F' \colon ▸EC → ED\) with \(F_0\) as object map
   \end{itemize}
     \(F\) is \emph{locally contractive} if it has as enrichment the sequence of enrichments \(EC \xrightarrow{\mathsf{next}} ▸EC \xrightarrow{F'} ED\), i.e.
-\[∀ x, y : C_0,\, f : \hom{C}{x}{y}.\ \expi{F_1 f}' = \expi{f} ; \mathsf{next} ; F_1' \]
+\[∀ X, Y : C,\, f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; \mathsf{next} ; F_1' \]
 \end{definition}
 \begin{itemize}
 \item NB: This is actually a corollary of the normal definition, for \(F\) with no preexisting enrichment.
 \end{itemize}
 \end{frame}
-
-\begin{frame}
-  \frametitle{the boundary of the representable: \(\mathsf{PSh}(A,<)\) as a model of guarded recursive terms}
-  Need : \(\mathsf{▸}, \mathsf{next}, \mathrm{Löb}\)
-  \begin{itemize}
-  \item \(↓ i = \{ j ≤ i\}. (↓ i) ≔ \hom{A}{–}{i} = よ i\). \(↡ i ≔ \{ j < i \}\)
-  \item \(▸ X i = \mathrm{lim}_{j<i} X j = \hom{\mathsf{PSh}(A)}{∂よ i }{X}\)
-  \item \(\mathsf{next}\colon \hom{\mathsf{Endo}(\mathsf{PSh}(A))}{\mathsf{Id}}{▸}\)
-    %, \(\mathsf{next} (X , \mathsf{restrX}_{{j ≤ i} \colon \hom{\mathsf{Set}}{X i}{X j}}) i \colon \hom{\mathsf{Set}}{(↡ i) j }{X j }\)
-  \item \(\mathsf{next}\) given by functoriality of the presheaf
-  \item \(\mathrm{Löb}:\) for \(H \colon \hom{\mathsf{PSh}(A)}{▸ \ihom{X}{Y}}{\ihom{X}{Y}}\) \(\mathrm{Löb}(H) \colon \hom{\mathsf{PSh}(A)}{𝟙}{\ihom{X}{Y}}\) s.t. \(\mathrm{Löb}H = \mathrm{Löb}H ; \mathsf{next} ; H\)
-  \item \(\mathrm{Löb}\) given by well founded induction
-  \end{itemize}
-\end{frame}
-
 
 \begin{frame}[fragile]
   \frametitle{Locally Contractive Functors give Hylomorphisms}
@@ -393,10 +445,10 @@ I \arrow[u,"c"] \arrow[r,"h_i"] &  O
       \end{tikzcd}
     \end{equation*}
 \begin{itemize}
-\item Note that in \eqref{eq:square}, the functional \(H(h) ≔ c ; h ; a\) has type \((F_0 I → F_0 O) → (I → O)\).
-\item Local contractivity of \(F\) gives us \(F_1' \colon ▸ (I → O) → (F_0I → F_0O) \).
-\item Putting them together we get \(▸ (I → O) \xrightarrow{F_1'} (F_0I → F_0O) \xrightarrow{H} (I → O) \)
-\item Applying \(\mathrm{Löb} \colon (▸ \ihom{I}{O} → \ihom{I}{O}) → \ihom{I}{O}\) gives us \(\mathrm{Löb} (F_1' ; H) \colon (I → O)\).
+\item Note that in \eqref{eq:square}, the functional \(H(h) ≔ c ; h ; a\) has type \(\hom{V}{(\ihom{F_0 I}{F_0 O})}{(\ihom{I}{O})}\).
+\item Local contractivity of \(F\) gives us \(F_1' \colon \hom{V}{▸ (\ihom{I}{O})}{(\ihom{F_0 I}{F_0 O})}\).
+\item Putting them together we get \(▸ (\ihom{I}{O}) \xrightarrow{F_1'} (\ihom{F_0 I}{F_0 O}) \xrightarrow{H} (\ihom{I}{O}) \)
+\item Applying \(\mathrm{Löb} \colon (▸ (\ihom{I}{O}) → (\ihom{I}{O})) → \glob{V}{𝟙}{\ihom{I}{O}}\) gives us \(\expi{\mathrm{Löb} (F_1' ; H)} \colon (I → O)\).
 \end{itemize}
 \end{frame}
 
