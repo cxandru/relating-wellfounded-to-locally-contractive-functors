@@ -194,23 +194,14 @@ inner sep=0pt,minimum size=1cm}}
 
 \begin{frame}
   \frametitle{Overview}
+  This talk is about defining \emph{recursive algorithms} in functional languages which are \emph{intrinsically correct \& terminating}
   \begin{itemize}
-  \item Recent progress in intrinsically correct total functional programming \parencite{alexandruIntrinsicallyCorrectAlgorithms2026}
-  \item Achieved with the novel notion of a \emph{well founded functor}
-  \item \emph{Gap}: similarities to \emph{locally contractive functors} \parencite{birkedalFirstStepsSynthetic2012}
-  \item \emph{Question}: Can we replace wff with lcf? \emph{Answer}: Yes
-  \item Same application, stronger foundation
+  \item Following the paradigm of \emph{structured recursion}, the recursion behaviour of \emph{divide-and-conquer} algorithms can be separated from their recursive steps, which can be expressed categorically as \emph{(co)algebras} for a \emph{functor}
+  \item We show how functors for intrinsically correct functional algorithms can be expressed as being \emph{locally contractive} \parencite{birkedalFirstStepsSynthetic2012}
+  \item \emph{termination} of these algorithms \emph{holds intrinsically}.
   \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Technical Overview}
-  \begin{itemize}
-  \item Locally contractive functors give rise to \emph{hylomorphisms}, which describe total functional algorithms
-  \item To instantiate lcf, we need an \emph{enrichment} of our category (indexed datatypes for intrinsically correct programs, corresponding to \emph{families}) in \emph{presheaves}
-  \item We go there and back again: Having instantiated the machinery, we expose a simpler interface for guarded recursion which uses only the \emph{family enrichment of families}
-  \end{itemize}
-\end{frame}
 
 \section{Motivation}
 
