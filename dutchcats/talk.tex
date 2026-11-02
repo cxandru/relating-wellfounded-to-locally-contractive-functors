@@ -217,15 +217,15 @@ ip \arrow[u,"\mathsf{partition}"] \arrow[r,"\mathsf{sort}"] \&  {\mathsf{sort}(i
 \end{column}\hfill
 \begin{column}[t]{.3\textwidth}
 \begin{tikzcd}
-F_0I \arrow[r, "F_1h"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{\refstepcounter{equation}(\theequation)\label{eq:square}} & F_0O \arrow[d, "a"] \\
+FI \arrow[r, "Fh"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{\refstepcounter{equation}(\theequation)\label{eq:square}} & FO \arrow[d, "a"] \\
 I \arrow[u,"c"] \arrow[r,"h"] &  O
 \end{tikzcd}
   \end{column}
 \end{columns}
 \begin{itemize}
 \item for \(\mathsf{partition}\): \(F ≔ B \) for \(B X ≔ 1 + X × A × X\), \(\quad I ≔ A^*\).
-\item A c2a-morphism \(h\) is called a \emph{hylomorphism} if it is the \emph{unique} c2a-morphism making \eqref{eq:square} commute.
-\item NB: In a non-total programming language, \texttt{h := c ; F1 h ; a} \emph{is} already a definition. We want to recover a similar definition scheme in a \emph{total} language.
+\item A c2a-morphism \(h\) is called a \emph{hylomorphism} if it is the unique c2a-morphism making \eqref{eq:square} commute, i.e. \eqref{eq:square} functions as a \emph{definition}.
+\item NB: In a non-total programming language, \texttt{h := c ; F h ; a} \emph{is already} a definition. We want to recover a similar definition scheme in a \emph{total} language.
 \end{itemize}
 \end{frame}
 
