@@ -197,8 +197,8 @@ inner sep=0pt,minimum size=1cm}}
 }
 \date{2026-10-27}
 \renewcommand<>{\emph}[1]{{\only#2{\bfseries}#1}}
-\renewcommand{\hom}[3]{\ensuremath{#1\left(#2,#3\right)}}
-\newcommand{\ihom}[2]{\ensuremath{\left[#1,#2\right]}}
+\renewcommand{\hom}[3]{\ensuremath{#2 → #3}}
+\newcommand{\ihom}[3][]{\ensuremath{#2 ⇒#1 #3}}
 \begin{document}
 \begin{frame}
   \titlepage
@@ -305,7 +305,7 @@ I \arrow[u,"c"] \arrow[r,"h_i"] &  O
 \begin{definition}[Enriched category]
   \begin{itemize}
   \item for every \(x, y \colon C_0\) the internal Hom \(\ihom{X}{Y}\);
-  \item an internal identity morphism \(\mathrm{id}_X \colon \hom{V}{𝟙}{\ihom{X}{X}}\) \& sequencing operation \(\hom{V}{\ihom{X}{Y}⊗\ihom{Y}{Z}}{\ihom{X}{Z}}\);
+  \item an internal identity morphism \(\mathrm{id}_X \colon \hom{V}{𝟙}{(\ihom{X}{X})}\) \& sequencing operation \(\hom{V}{(\ihom{X}{Y}⊗\ihom{Y}{Z})}{(\ihom{X}{Z})}\);
   \item internal counterparts to unitality \& associativity coherences
   \end{itemize}
 \end{definition}
@@ -327,7 +327,7 @@ I \arrow[u,"c"] \arrow[r,"h_i"] &  O
   \item Families \((\mathsf{Set}^{C_0})\) are Cartesian monodial, inheriting that structure pointwise from \(\mathsf{Set}\)
   \item \(𝟙 = \prod_{c ∈ C_0} 𝟙_{\mathsf{Set}}\)
   \item \(\ihom{X}{Y} c = \hom{\mathsf{Set}}{X c }{Y c}\)
-  \item \(\hom{\mathsf{Set}^{C_0}}{X }{Y} = \prod_{c ∈ C_0}\hom{\mathsf{Set}}{X c }{Y c} ≅ \prod_{c ∈ C_0}\hom{\mathsf{Set}}{𝟙_{\mathsf{Set}}}{\hom{\mathsf{Set}}{X c }{Y c}} = \hom{\mathsf{Set}^{C_0}}{𝟙 }{\ihom{X}{Y}} \)
+  \item \(\hom{\mathsf{Set}^{C_0}}{X }{Y} = \prod_{c ∈ C_0}\hom{\mathsf{Set}}{X c }{Y c} ≅ \prod_{c ∈ C_0}\hom{\mathsf{Set}}{𝟙_{\mathsf{Set}}}{\hom{\mathsf{Set}}{X c }{Y c}} =\\ \hom{\mathsf{Set}^{C_0}}{𝟙 }{\ihom{X}{Y}} \)
   \end{itemize}
 \end{frame}
 
@@ -336,11 +336,11 @@ I \arrow[u,"c"] \arrow[r,"h_i"] &  O
 \begin{definition}[Enrichment of a Functor]
   Given:
   \begin{itemize}
-  \item categories \(C, D\) with enrichments \(EC = (\ihom{-}{-},\expi{-})\) and \(ED = (\ihom{-}{-}',\expi{-}')\) in monoidal category \(V\);
+  \item categories \(C, D\) with enrichments \(EC = (\ihom{-}{-},\expi{-})\) and \(ED = (\ihom[']{-}{-},\expi{-}')\) in monoidal category \(V\);
   \item a functor \(F \colon C → D\)
   \end{itemize}
    An \emph{enrichment} of \(F\) in \(EC,ED\) is an internal functorial action
-   \[F_1' \colon \hom{V}{\ihom{X}{Y}}{\ihom{F_0 X}{F_0 Y}'}\]
+   \[F_1' \colon \hom{V}{\ihom{X}{Y}}{\ihom[']{F_0 X}{F_0 Y}'}\]
    \vspace{-1\baselineskip{}}
    \begin{itemize}
    \item obeying internal counterparts to preservation of id and comp.;
