@@ -521,6 +521,23 @@ Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
 
 \begin{frame}[fragile]
   \frametitle{The Prestige: \(\overline{B}\) is locally contractive}
+\[
+  \overline{B} \begin{pmatrix}
+    X \\
+    f
+  \end{pmatrix}
+  ≔
+  \begin{pmatrix}
+    1 \\
+    * ↦ \emptyset
+  \end{pmatrix}
+  +
+  \begin{pmatrix}
+    \{(l,p,r) ∈ X × A × X \mid \dots\} \\ %
+    (l, p, r) ↦ f(l) \uplus \{p\} \uplus f(r)
+  \end{pmatrix}
+\]
+
   \begin{equation*}
 \begin{alignedat}{3}
   &\overline{B}' \;&&\mathrlap{\colon \hom{\mathsf{Fam}(A)}{▸' (\ihom{X}{Y})}{(\ihom{\overline{B}X}{\overline{B}Y})}} \\
@@ -530,23 +547,6 @@ Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
 \end{alignedat}
   \end{equation*}
 \end{frame}
-
-% \[
-%   \overline{B} \begin{pmatrix}
-%     X \\
-%     f
-%   \end{pmatrix}
-%   ≔
-%   \begin{pmatrix}
-%     1 \\
-%     * ↦ \emptyset
-%   \end{pmatrix}
-%   +
-%   \begin{pmatrix}
-%     \{(l,p,r) ∈ X × A × X \mid \dots\} \\ %
-%     (l, p, r) ↦ f(l) \uplus \{p\} \uplus f(r)
-%   \end{pmatrix}
-% \]
 
 \section{Outlook}
 
