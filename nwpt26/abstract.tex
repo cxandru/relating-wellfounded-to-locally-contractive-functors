@@ -202,7 +202,7 @@ I \arrow[u,"c"] \arrow[r,"h"] &  O
 \makebox[\linewidth][r]{\parbox{1.5\linewidth}{\captionof{figure}{coalgebra-to-algebra morphism}\label{fig:coalg-alg-morphism}}}
 \end{minipage}
 
-A coalgebra-to-algebra morphism \(h\) is called a \emph{hylomorphism} if it is the unique coalgebra-to-algebra morphism making \eqref{eq:hylo} commute;  i.e.\ the recursive equation \(h = c ; F h ; a\) has a unique solution and can be read as a \emph{definition}.
+A coalgebra-to-algebra morphism \(h\) is called a \emph{hylomorphism} if it is the unique coalgebra-to-algebra morphism making \eqref{eq:hylo} commute;  i.e.\ the equation \(h = c ; F h ; a\) has a unique solution and can be read as a \emph{definition}.
 Note that in a non-total programming language, \texttt{h := c ; F h ; a} \emph{is already} a definition.
 Our goal is to recover a similar definition scheme in a \emph{total} language.
 
@@ -225,27 +225,23 @@ The refined \(B\) becomes \(\overline{B}\) (expressed for better comprehensibili
     (l, p, r) ↦ f(l) \uplus \{p\} \uplus f(r)
   \end{pmatrix}
 \]
-The interesting thing to note is the following: The multiset indices in functorial positions are smaller than the result index: \(f(l),f(r) < f(l) \uplus \{p\} \uplus f(r)\). The refined type of \(\mathsf{partition}\) now encodes that the output triple contains the same elements as the input. 
+The refined type of \(\mathsf{partition}\) now encodes that the output triple contains the same elements as the input. 
 \[
   \begin{tikzcd}[every arrow/.append style={mapsto},column sep=2cm]
  {ip} \arrow[r, "\mathsf{partition}"]\arrow[d, "\mathsf{toBag}"] & {(i_{≤ p}, p, i_{> p})} \arrow[d, "\mathsf{toBag} ⊗ \{–\} ⊗ \mathsf{toBag}"] \\
-\mathsf{toBag}(i)\uplus \{p\}} \arrow[r,equal] &  \mathsf{toBag}(i_{≤ p})} \uplus \{p\} \uplus \mathsf{toBag}(i_{> p})
+\mathsf{toBag}(i)\uplus \{p\} \arrow[r,equal] &  \mathsf{toBag}(i_{≤ p}) \uplus \{p\} \uplus \mathsf{toBag}(i_{> p})
 \end{tikzcd}
 \]
+The interesting thing to note is the following: The multiset indices in functorial positions are smaller than the result index: \(f(l),f(r) < f(l) \uplus \{p\} \uplus f(r)\).
 
-\paragraph{Formalisation Goal}\label{sec:intro}
-We generalize to any functor \(F\) on a power category \(𝒞^A\) with \((A,<)\) a well founded ordering, where \enquote{the indices in functorial positions are smaller than the result index}. We outline an informal plan of attack for how such a functor gives solutions to \eqref{eq:hylo}. Since the functorial indices are smaller, 
-  \begin{equation*}
-\begin{tikzcd}[every label/.append style={font=\normalsize}]
-FI \arrow[r, "F{h\textcolor{red}{\mid_{<i}}}"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{\eqref{eq:hylo}} & FO \arrow[d, "a_i"] \\
-I \arrow[u,"c_i"] \arrow[r,"h_{\textcolor{red}{i}}"] &  O
-\end{tikzcd}
-\end{equation*}
-The plan is the following: Construct \(h\) as an inhabitant of \(\hom{𝒞^A}{I}{O}\) using well founded recursion.
-To express this properly, we need to move from Hom-\emph{sets} to Hom-\emph{objects} in some category with the requisite structure for constructing objects using well founded recursion.
-We additionally need an \enquote{alternative functorial action} of \(F\), \(F_1'\) that, intuitively, takes morphisms \(\hom{\mathsf{Fam}(A)}{I}{O}\) restricted to smaller indices and produces a morphism \(\hom{𝒞^A}{F_0 I}{F_0 O}\) at the current index, such that \(F_1'\) agrees with \(F_1\).
-The tools to make these notions formal are \emph{enriched category theory} and \emph{locally contractive functors}.
-For notions of enriched category theory we mostly follow~\cite{weideUnivalentEnrichedCategories2026}.
+\paragraph{Sketch}\label{sec:intro}
+We generalize to any functor \(F\) on a power category \(𝒞^A\) with \((A,<)\) a well founded ordering, where \enquote{the indices in functorial positions are smaller than the result index}. Such a functor gives solutions to \eqref{eq:hylo}; since the functorial indices are smaller, we construct \(h\) pointwise as an inhabitant of \(\ehom{𝒞^A}{I}{O}\) using well founded recursion: 
+\[h_{\textcolor{red}{i}} ≔ c_i ; (F (h\textcolor{red}{|_{<i}}))_i ; a_i.\]
+The key steps in making this sketch rigorous are the following : \begin{enumerate*}[label=\alph*), itemjoin=~]
+\item Moving from Hom-\emph{sets} to Hom-\emph{objects} in some category which surfaces the requisite structure for constructing objects using well founded recursion
+\item Defining what it means to be an \enquote{alternative functorial action} of \(F\) which takes morphisms \(\hom{\mathsf{Fam}(A)}{I}{O}\) restricted to smaller indices and produces a morphism \(\hom{𝒞^A}{F_0 I}{F_0 O}\) at the current index
+\end{enumerate*}.
+The tools we use to take these steps are \emph{enriched category theory} \cite{kellyBasicConceptsEnriched1982,weideUnivalentEnrichedCategories2026,cruttwell2008normed} and \emph{locally contractive functors} \cite{birkedalFirstStepsSynthetic2012}.
 
 \paragraph{Enrichment}
 \label{sec:enrichment}
