@@ -128,8 +128,27 @@ https://partiallyapplied.eu/ictfp/%
 \patchcmd{\printbibliography}{\small}{\small}{}{} % or hook into precode
 \AtBeginBibliography{\small}
 
+\usepackage[most]{tcolorbox}
+% Okabe–Ito colourblind-safe palette
+\definecolor{oiBlue}{HTML}{0072B2}
+\definecolor{oiOrange}{HTML}{E69F00}
+\definecolor{oiPurple}{HTML}{CC79A7}
+% \idxbox{<colour>}{<math>}: rounded, thick-edged box around math
+\newcommand{\idxbox}[2]{%
+  \tcboxmath[colframe=#1, colback=#1!10, boxrule=1.2pt, arc=3pt,
+  boxsep=0pt, left=2pt, right=2pt, top=1pt, bottom=1pt]{#2}}
+% Same geometry as \idxbox, but fully transparent
+\newcommand{\idxboxhidden}[2]{%
+  \tcboxmath[colframe=#1, colback=#1!10, boxrule=1.2pt, arc=3pt,
+             boxsep=0pt, left=2pt, right=2pt, top=1pt, bottom=1pt,
+             opacityframe=0, opacityback=0]{#2}}
 
-\title{Intrinsically correct \& total functional programming with enrichment, contractive functors, recursive coalgebras and cofree presheaves}
+\renewcommand{\hom}[3]{\ensuremath{#2 → #3}}
+\newcommand{\ehom}[3]{\ensuremath{#1\left(#2 , #3\right)}} % explicit hom
+\newcommand{\ihom}[3][]{\ensuremath{#2 ⇒#1 #3}}
+\newcommand{\glob}[3]{\ensuremath{Γ\left(#3\right)}}
+
+\title{Intrinsically correct \& total functional programming using locally contractive functors}
 
 \author{
   Cass Alexandru \inst{1} \and Steven Schaefer \inst{2} \and Max S. New \inst{2}
@@ -151,14 +170,11 @@ https://partiallyapplied.eu/ictfp/%
 
 \maketitle
 
-Recent progress has been made \cite{alexandruIntrinsicallyCorrectAlgorithms2026} in formalising synergies between proofs of partial and total correctness of algorithms defined using structured recursion \cite{hinzeConjugateHylomorphismsMother2015}.
-This was achieved with the introduction of the novel notion of a well founded functor.
-We achieve the same result, i.e. a criterion for all coalgebras for an endofunctor on the power category \(𝒞^A\), for \(A\) the carrier of a well founded ordering \(<\), to be recursive.
-Our criterion is a novel instantiation of the preexisting notion of a locally contractive functor \cite{birkedalFirstStepsSynthetic2012}.
-This instantiation is achieved by enriching \(𝒞^A\) in presheaves over \((A,<)\) using change of base of enrichment along the cofree presheaf functor.
-Our hope is that demonstrating how this preexisting notion can be instantiated for this novel application may lead to a broader adoption of the technique, as well as enabling reuse of all existing known results about locally contractive functors in this setting.
+We present a novel way to define recursive algorithms in functional languages such that they are intrinsically correct and terminating.
+Following the paradigm of structured recursion~\cite{hinzeConjugateHylomorphismsMother2015}, the recursion behavior of divide-and-conquer algorithms can be separated from their recursive steps, which can be expressed categorically as (co)algebras for a functor.
+We show how functors for intrinsically correct functional algorithms can be expressed as being \emph{locally contractive} \cite{birkedalFirstStepsSynthetic2012}. Termination of these algorithms then holds intrinsically.
 
-\paragraph{Recursive Coalgebras}
+\paragraph{Motivation}
 Expressing recursive algorithms using coalgebra-to-algebra morphisms has a long history \cite{CaprettaUV06,jeanninWellfoundedCoalgebrasRevisited2017,taylor99,meijerFunctionalProgrammingBananas1991}.
 The key idea is the following: In a base category \(𝒞\) modeling the types and functions of your functional programming language, choose an endofunctor \(F \colon 𝒞 → 𝒞\). We can think of this functor as describing a distribution; e.g.\ the functor \(B X ≔ 1 + X × A × X\) describes the distribution of either a base case \(* : 1\) or two inputs \(l , r : X\) and an output \(o : A\).
 A recursive algorithm \(h\) can be seen as the following sequence of steps:
@@ -178,27 +194,23 @@ ip \arrow[u,"\mathsf{partition}"] \arrow[r,"\mathsf{qsort}"] \&  {\mathsf{qsort}
 \end{tikzcd}\vspace{-1\baselineskip{}}
 \captionof{figure}{quicksort recursive case}\label{fig:qsort-recursive}
 \end{minipage}\hfill
-\begin{minipage}[t]{.4\textwidth}
+\begin{minipage}[t]{.3\textwidth}
 \begin{tikzcd}
-F_0I \arrow[r, "F_1h"] & F_0O \arrow[d, "a"] \\
+F_0I \arrow[r, "F_1h"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{\refstepcounter{equation}(\theequation)\label{eq:hylo}} & F_0O \arrow[d, "a"] \\
 I \arrow[u,"c"] \arrow[r,"h"] &  O
 \end{tikzcd}
-\makebox[\linewidth][r]{\parbox{1.25\linewidth}{\captionof{figure}{coalgebra-to-algebra morphism}\label{fig:coalg-alg-morphism}}}
+\makebox[\linewidth][r]{\parbox{1.5\linewidth}{\captionof{figure}{coalgebra-to-algebra morphism}\label{fig:coalg-alg-morphism}}}
 \end{minipage}
 
-A coalgebra \(c\) is called \emph{recursive}, if for every target algebra \(a\) there is a unique \(h\) such that \eqref{fig:coalg-alg-morphism} commutes, i.e.\ the recursive equation \(h = c ; F h ; a\) has a unique solution and can be read as a \emph{definition}.
-Intuitively, this means \(c\) is a division step that, when iterated, builds only well founded trees of shape \(F\), regardless of the starting input \(i : I\).
-The challenge of defining an algorithm as a coalgebra-to-algebra morphism in a total language then can be reduced to proving the recursivity of its coalgebra.
+A coalgebra-to-algebra morphism \(h\) is called a \emph{hylomorphism} if it is the unique coalgebra-to-algebra morphism making \eqref{eq:hylo} commute;  i.e.\ the recursive equation \(h = c ; F h ; a\) has a unique solution and can be read as a \emph{definition}.
+Note that in a non-total programming language, \texttt{h := c ; F h ; a} \emph{is already} a definition.
+Our goal is to recover a similar definition scheme in a \emph{total} language.
 
-This challenge becomes easier to tackle when we take partial correctness into account. Continuing with our Quicksort, we home in on its coalgebra, \textsf{partition}. Its type, \(\mathsf{List} A → 1 + \mathsf{List} A × \mathsf{List} A\) is really too coarse. The partial correctness of \textsf{partition} entails
-\begin{enumerate*}[itemjoin=~]
-\item the output \(B (\mathsf{List} A)\) value contain the same \emph{elements} as the input;
-\item the elements to the left/right of the selected pivot be respectively smaller/greater than it.
-\end{enumerate*}
+This challenge becomes easier to tackle when we take partial correctness into account. Continuing with our Quicksort example, we home in on its coalgebra, \textsf{partition}. Its type, \(\mathsf{List} A → 1 + \mathsf{List} A × \mathsf{List} A\) is really too coarse. The partial correctness of \textsf{partition} entails, in particular, that the output \(B (\mathsf{List} A)\) value contain the same \emph{elements} as the input.
 One approach to refine its type in order to capture this, due to \cite{AlexandruCRW25}, is to move to the setting of \emph{families} in \textsf{Set} indexed by the set \(ℳA\) of finite multisets of element type \(A\).
-The refined \(B\) becomes \(\bar{B}\) (expressed for better comprehensibility in the slice category \(\mathsf{Set}/ℳA\) instead of in \(\mathsf{Set}^{ℳA}\)) :
+The refined \(B\) becomes \(\overline{B}\) (expressed for better comprehensibility in the slice category \(\mathsf{Set}/ℳA\) instead of in \(\mathsf{Fam}(ℳA) = \mathsf{Set}^{ℳA}\)) :
 \[
-  \bar{B} \begin{pmatrix}
+  \overline{B} \begin{pmatrix}
     X \\
     f
   \end{pmatrix}
@@ -209,14 +221,31 @@ The refined \(B\) becomes \(\bar{B}\) (expressed for better comprehensibility in
   \end{pmatrix}
   +
   \begin{pmatrix}
-    \{(l,p,r) ∈ X × A × X \mid ∀ e_l ∈ f(l), e_r ∈ f(r).\, e_l ≤ p ≤ e_r\} \\
+    \{(l,p,r) ∈ X × A × X \mid \dots\} \\
     (l, p, r) ↦ f(l) \uplus \{p\} \uplus f(r)
   \end{pmatrix}
 \]
-The interesting thing to note is the following: The multiset indices in functorial positions are smaller than the result index: \(f(l),f(r) < f(l) \uplus \{p\} \uplus f(r)\).
+The interesting thing to note is the following: The multiset indices in functorial positions are smaller than the result index: \(f(l),f(r) < f(l) \uplus \{p\} \uplus f(r)\). The refined type of \(\mathsf{partition}\) now encodes that the output triple contains the same elements as the input. 
+\[
+  \begin{tikzcd}[every arrow/.append style={mapsto},column sep=2cm]
+ {ip} \arrow[r, "\mathsf{partition}"]\arrow[d, "\mathsf{toBag}"] & {(i_{≤ p}, p, i_{> p})} \arrow[d, "\mathsf{toBag} ⊗ \{–\} ⊗ \mathsf{toBag}"] \\
+\mathsf{toBag}(i)\uplus \{p\}} \arrow[r,equal] &  \mathsf{toBag}(i_{≤ p})} \uplus \{p\} \uplus \mathsf{toBag}(i_{> p})
+\end{tikzcd}
+\]
 
-\paragraph{Intro}\label{sec:intro}
-In particular, that means we are able to define a functorial action of \(F\), \(F_1'\) that, intuitively, takes morphisms \(A → B\) at smaller indices and produces a morphism \(F_0 A → F_0 B\) at the current index, such that \(F_1'\) agrees with \(F_1\). This then allows us to essentially construct a solution to \eqref{fig:coalg-alg-morphism} as an inhabitant of the homset \(I → O\) using well founded recursion. We proceed to make all of these notions formal. For notions of enriched category theory we mostly follow~\cite{weideUnivalentEnrichedCategories2026}.
+\paragraph{Formalisation Goal}\label{sec:intro}
+We generalize to any functor \(F\) on a power category \(𝒞^A\) with \((A,<)\) a well founded ordering, where \enquote{the indices in functorial positions are smaller than the result index}. We outline an informal plan of attack for how such a functor gives solutions to \eqref{eq:hylo}. Since the functorial indices are smaller, 
+  \begin{equation*}
+\begin{tikzcd}[every label/.append style={font=\normalsize}]
+FI \arrow[r, "F{h\textcolor{red}{\mid_{<i}}}"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{\eqref{eq:hylo}} & FO \arrow[d, "a_i"] \\
+I \arrow[u,"c_i"] \arrow[r,"h_{\textcolor{red}{i}}"] &  O
+\end{tikzcd}
+\end{equation*}
+The plan is the following: Construct \(h\) as an inhabitant of \(\hom{𝒞^A}{I}{O}\) using well founded recursion.
+To express this properly, we need to move from Hom-\emph{sets} to Hom-\emph{objects} in some category with the requisite structure for constructing objects using well founded recursion.
+We additionally need an \enquote{alternative functorial action} of \(F\), \(F_1'\) that, intuitively, takes morphisms \(\hom{\mathsf{Fam}(A)}{I}{O}\) restricted to smaller indices and produces a morphism \(\hom{𝒞^A}{F_0 I}{F_0 O}\) at the current index, such that \(F_1'\) agrees with \(F_1\).
+The tools to make these notions formal are \emph{enriched category theory} and \emph{locally contractive functors}.
+For notions of enriched category theory we mostly follow~\cite{weideUnivalentEnrichedCategories2026}.
 
 \paragraph{Enrichment}
 \label{sec:enrichment}
@@ -258,7 +287,7 @@ All coalgebras for a locally contractive functor \(F\) are recursive; likewise a
 \end{corollary}
 \begin{proof}[Proof sketch]
   % TODO: fix add boundary constraints
-  Note that in \eqref{fig:coalg-alg-morphism}, the functional\footnote{higher-order function} \(H(h) ≔ c ; h ; a\) has type \((F_0 I → F_0 O) → (I → O)\). Local contractivity of \(F\) gives us \(F_1' \colon ▷ (I → O) → (F_0I → F_0O) \). But guarded unique fixed points in \(V\) give us the rule \(\mathrm{Löb} \colon (▷ f → f) → f\). Thus we obtain \(h\) by \(\mathrm{Löb} (F_1' ; H)\)
+  Note that in \eqref{eq:hylo}, the functional\footnote{higher-order function} \(H(h) ≔ c ; h ; a\) has type \((F_0 I → F_0 O) → (I → O)\). Local contractivity of \(F\) gives us \(F_1' \colon ▷ (I → O) → (F_0I → F_0O) \). But guarded unique fixed points in \(V\) give us the rule \(\mathrm{Löb} \colon (▷ f → f) → f\). Thus we obtain \(h\) by \(\mathrm{Löb} (F_1' ; H)\)
 \end{proof}
 
 \paragraph{Bridge}
