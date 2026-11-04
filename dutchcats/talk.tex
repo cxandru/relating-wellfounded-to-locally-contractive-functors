@@ -42,6 +42,15 @@
 \newcommand{\idxbox}[2]{%
   \tcboxmath[colframe=#1, colback=#1!10, boxrule=1.2pt, arc=3pt,
   boxsep=0pt, left=2pt, right=2pt, top=1pt, bottom=1pt]{#2}}
+% Same geometry as \idxbox, but fully transparent
+\newcommand{\idxboxhidden}[2]{%
+  \tcboxmath[colframe=#1, colback=#1!10, boxrule=1.2pt, arc=3pt,
+             boxsep=0pt, left=2pt, right=2pt, top=1pt, bottom=1pt,
+             opacityframe=0, opacityback=0]{#2}}
+
+% Overlay-aware: \idxboxon<2->{colour}{math} is visible on slide 2, invisible (but space-reserving) elsewhere
+\newcommand<>{\idxboxon}[2]{\alt#3{\idxbox{#1}{#2}}{\idxboxhidden{#1}{#2}}}
+
 
 \usepackage{amsmath}
 
@@ -538,14 +547,14 @@ Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
   \end{pmatrix}
 \]
 
-  \begin{equation*}
+\begin{equation*}
 \begin{alignedat}{3}
   &\overline{B}' \;&&\mathrlap{\colon \hom{\mathsf{Fam}(A)}{▸' (\ihom{X}{Y})}{(\ihom{\overline{B}X}{\overline{B}Y})}} \\
   &\overline{B}'   &&(i = ∅)\ &&f\ &&* &&= * \\
-  &\overline{B}'   &&(\idxbox{oiPurple}{i = \idxbox{oiBlue}{j} \uplus \{p\} \uplus \idxbox{oiOrange}{k}})\ &&(f \colon ∀ (j \idxbox{oiPurple}{< i}).\, X j → Y j)\\
-  &                &&&&(l ∈ X \idxbox{oiBlue}{j},\, p ,\, r ∈ X \idxbox{oiOrange}{k}) &&&&=(f l ,\, p ,\, f r)
+  &\overline{B}'   &&(\idxboxon<2->{oiPurple}{i = \idxboxon<2->{oiBlue}{j} \uplus \{p\} \uplus \idxboxon<2->{oiOrange}{k}})\ &&(f \colon ∀ (j \idxboxon<2->{oiPurple}{< i}).\, X j → Y j)\\
+  &                &&&&(l ∈ X \idxboxon<2->{oiBlue}{j},\, p ,\, r ∈ X \idxboxon<2->{oiOrange}{k}) &&&&=(f l ,\, p ,\, f r)
 \end{alignedat}
-  \end{equation*}
+\end{equation*}
 \end{frame}
 
 \section{Outlook}
