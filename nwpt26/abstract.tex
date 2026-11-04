@@ -119,6 +119,16 @@ https://partiallyapplied.eu/ictfp/%
 \newcommand{\inj}{\mathsf{in}}
 \newcommand{\C}{{\ensuremath{\mathcal{C}}}}
 
+
+\usepackage[backend=biber,style=numeric,url=false]{biblatex}
+\ExecuteBibliographyOptions[online,software,video]{url=true}
+\addbibresource{../works.bib}
+
+% Restore EasyChair bibliography sizing if biblatex overrides it
+\patchcmd{\printbibliography}{\small}{\small}{}{} % or hook into precode
+\AtBeginBibliography{\small}
+
+
 \title{Intrinsically correct \& total functional programming with enrichment, contractive functors, recursive coalgebras and cofree presheaves}
 
 \author{
@@ -283,7 +293,7 @@ The functor that does the job is the \emph{cofree presheaf functor}: \(U ⊣ \ma
 \end{proof}
 \paragraph{Coda}
 Thus, we find ourselves with with what we wanted from the outset: When working in the power category \(𝒞^A\) for some well founded order \(A,<\), as one does when defining intrinsically correct algorithms, one can express termination of an algorithm defined as a coalgebra-to-algorithm by proving that the functor \(F\) for which it is defined is locally contractive. This procedure is precisely the formal counterpart to what we layed out in \nameref{sec:intro} and elaborated in \nameref{sec:bridge}. The incomplete Agda development accompanying this work is at \url{https://github.com/um-catlab/cubical-categorical-logic/tree/guarded-enriched}
-\bibliographystyle{plain}
-\bibliography{../works}
+
+\printbibliography
 
 \end{document}
