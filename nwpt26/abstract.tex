@@ -91,7 +91,7 @@ https://partiallyapplied.eu/ictfp/%
 }
 \newcommand{\hrefpublicdoc}[2]{%
   \StrSubstitute{#1}{.}{/}[\agdafilename]%
-  \nicehref{\onlineHtmlURL #1.html\##2}{\agdafilename.agda}%
+  \nicehref{\onlineHtmlURL #1.html\#:~:text=#2}{\agdafilename.agda}%
 }
 
 \newsavebox{\logoagdabox}
@@ -108,7 +108,7 @@ https://partiallyapplied.eu/ictfp/%
   \coqref{#2}{#3}{#4%
     %\linebreak[3]%
     %(\hrefpublicdoc{#2}{#3})
-  }{\href{\onlineHtmlURL #2.html\##3}{\usebox{\logoagdabox}}}}
+  }{\href{\onlineHtmlURL #2.html\#:~:text=#3}{\usebox{\logoagdabox}}}}
 \newcommand{\agdarefcustom}[4]{%
   \coqrefcustom{#1}{#2}{#3}{\href{\onlineHtmlURL #2.html\##3}{\usebox{\logoagdabox}}}%
   {#4%
