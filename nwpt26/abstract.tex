@@ -206,7 +206,7 @@ A coalgebra-to-algebra morphism \(h\) is called a \emph{hylomorphism} if it is t
 Note that in a non-total programming language, \texttt{h := c ; F h ; a} \emph{is already} a definition.
 Our goal is to recover a similar definition scheme in a \emph{total} language.
 
-This challenge becomes easier to tackle when we take partial correctness into account. Continuing with our Quicksort example, we home in on its coalgebra, \textsf{partition}. Its type, \(\mathsf{List} A → 1 + \mathsf{List} A × \mathsf{List} A\) is really too coarse. The partial correctness of \textsf{partition} entails, in particular, that the output \(B (\mathsf{List} A)\) value contain the same \emph{elements} as the input.
+This challenge becomes easier to tackle when we take partial correctness into account. Continuing with our Quicksort example, we home in on its coalgebra, \textsf{partition}. Its type, \(A^* → 1 + A^* × A^*\) is really too coarse. The partial correctness of \textsf{partition} entails, in particular, that the output \(B (A^*)\) value contain the same \emph{elements} as the input.
 One approach to refine its type in order to capture this, due to \cite{AlexandruCRW25}, is to move to the setting of \emph{families} in \textsf{Set} indexed by the set \(ℳA\) of finite multisets of element type \(A\).
 The refined \(B\) becomes \(\overline{B}\) (expressed for better comprehensibility in the slice category \(\mathsf{Set}/ℳA\) instead of in \(\mathsf{Fam}(ℳA) = \mathsf{Set}^{ℳA}\)) :
 \[
@@ -235,11 +235,11 @@ The refined type of \(\mathsf{partition}\) now encodes that the output triple co
 The interesting thing to note is the following: The multiset indices in functorial positions are smaller than the result index: \(f(l),f(r) < f(l) \uplus \{p\} \uplus f(r)\).
 
 \paragraph{Sketch}\label{sec:intro}
-We generalize to any functor \(F\) on a power category \(𝒞^A\) with \((A,<)\) a well founded ordering, where \enquote{the indices in functorial positions are smaller than the result index}. Such a functor gives solutions to \eqref{eq:hylo}; since the functorial indices are smaller, we construct \(h\) pointwise as an inhabitant of \(\ehom{𝒞^A}{I}{O}\) using well founded recursion: 
+We generalize to any functor \(F\) on a power category \(𝒞^A\) with \((A,<)\) a well founded ordering, where \enquote{the indices in functorial positions are smaller than the result index}. Such a functor gives solutions to \eqref{eq:hylo}: since the functorial indices are smaller, we construct \(h\) pointwise as an inhabitant of \(\ehom{𝒞^A}{I}{O}\) using well founded recursion: 
 \[h_{\textcolor{red}{i}} ≔ c_i ; (F (h\textcolor{red}{|_{<i}}))_i ; a_i.\]
 The key steps in making this sketch rigorous are the following : \begin{enumerate*}[label=\alph*), itemjoin=~]
 \item Moving from Hom-\emph{sets} to Hom-\emph{objects} in some category which surfaces the requisite structure for constructing objects using well founded recursion
-\item Defining what it means to be an \enquote{alternative functorial action} of \(F\) which takes morphisms \(\hom{\mathsf{Fam}(A)}{I}{O}\) restricted to smaller indices and produces a morphism \(\hom{𝒞^A}{F_0 I}{F_0 O}\) at the current index
+\item Defining what it means to be an alternative functorial action of \(F\) which takes morphisms \(\hom{\mathsf{Fam}(A)}{I}{O}\) restricted to smaller indices and produces a morphism \(\hom{𝒞^A}{F_0 I}{F_0 O}\) at the current index
 \end{enumerate*}.
 The tools we use to take these steps are \emph{enriched category theory} \cite{kellyBasicConceptsEnriched1982,weideUnivalentEnrichedCategories2026,cruttwell2008normed} and \emph{locally contractive functors} \cite{birkedalFirstStepsSynthetic2012}.
 
