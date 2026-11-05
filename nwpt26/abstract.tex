@@ -234,7 +234,7 @@ The refined type of \(\mathsf{partition}\) now encodes that the output triple co
 \mathsf{toBag}(i)\uplus \{p\} \arrow[r,equal] &  \mathsf{toBag}(i_{≤ p}) \uplus \{p\} \uplus \mathsf{toBag}(i_{> p})
 \end{tikzcd}
 \]
-The interesting thing to note is the following: The multiset indices in functorial positions are smaller than the result index: \(f(l),f(r) < f(l) \uplus \{p\} \uplus f(r)\).
+The thing of note is the following: The multiset indices in functorial positions are smaller than the result index: \(f(l),f(r) < f(l) \uplus \{p\} \uplus f(r)\). We proceed to sketch how functors with this property yield solutions to \eqref{eq:hylo}, yielding in this case an intrinsically correct and terminating implementation of QuickSort. We show that \(\overline{B}\) has this property in \nameref{sec:prestige}.
 
 \paragraph{Sketch}\label{sec:intro}
 We generalize to any functor \(F\) on a power category \(𝒞^A\) with \((A,<)\) a well founded ordering, where \enquote{the indices in functorial positions are smaller than the result index}. Such a functor gives solutions to \eqref{eq:hylo}: since the functorial indices are smaller, we construct \(h\) pointwise as an inhabitant of \(\ehom{𝒞^A}{I}{O}\) using well founded recursion: 
