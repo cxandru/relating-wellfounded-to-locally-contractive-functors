@@ -245,21 +245,21 @@ The key steps in making this sketch rigorous are the following : \begin{enumerat
 \end{enumerate*}.
 The tools we use to take these steps are \emph{enriched category theory} \cite{kellyBasicConceptsEnriched1982,weideUnivalentEnrichedCategories2026,cruttwell2008normed} and \emph{locally contractive functors} \cite{birkedalFirstStepsSynthetic2012}.
 
-\paragraph{Enrichment}
-\label{sec:enrichment}
-To talk about an action of a functor \(F\) that isn't \(F_1\), we need the notion of:
-\begin{definition}[Enrichment of a category \(C\) in a monoidal category \(V\), {\cite[Def.~2.2]{weideUnivalentEnrichedCategories2026}}\agdaref{Cubical.Categories.Enriched.Enrichment.Base}{Enrichment}{}]
-  An enrichment \(EC\) of a category \(C\) in a monoidal category \((V,⊗,I)\) consists of the following data:
-  \begin{itemize}
-  \item for every \(x, y \colon C\) the external Hom \(ℰ_{X,Y}\), an external identity morphism \& sequencing operation, and external counterparts to unitality \& associativity coherences;
-  \item for every \(x, y \colon C\) a bijection \(\expi{-}\colon C[x,y] ≅ V[I,ℰ_{X,Y}]\) witnessing that \(C\) and the underlying category with objects \(C_0\) and homsets \(V[I,ℰ_{X,Y}]\) of \(EC\) viewed as an \emph{enriched category}~\cite{kellyBasicConceptsEnriched1982} are isomorphic as categories.
-  \end{itemize}
-\end{definition}
-\begin{definition}[Enrichment of a functor, {\cite[Def.~2.4]{weideUnivalentEnrichedCategories2026}} \agdaref{Cubical.Categories.Enriched.Enrichment.Functor.Base}{Enrichment}{}]
-  Given categories \(C, D\) and enrichments \((EC,\expi{-}), (ED,\expi{-}')\) in a monoidal category \(V\) an \emph{enrichment} of a functor \(F \colon C → D\) in \(EC,ED\) is an external functorial action
-  \(F_1' \colon V[EC.ℰ_{X,Y},ED.ℰ_{F_0 X, F_0 Y}]\), obeying external counterparts to preservation of identities and sequencing, such that \(F_1\) and \(F_1'\) \emph{agree}:
-  \[∀ x, y : C_0,\, f : C[x,y].\ \expi{F_1 f}' = \expi{f} ; F_1' \]
-\end{definition}
+\paragraph{Enriched Category Theory} We fix a monoidal category \((V,⊗,𝟙)\).
+An \emph{enriched category} for a set \(C_0\) of objects has for every \(X, Y \colon C_0\) the internal Hom \((\ihom{X}{Y}) \colon V\).
+We denote with \(Γ X ≔ \hom{V}{𝟙}{X}; Γ \colon V → \mathsf{Set}\) the global element functor.
+Then for an enriched category \(C'\) there is the \emph{underlying} plain (i.e. \(\mathsf{Set}\)-enriched) category \((Γ^*C', \ihom[']{}{})\) with \(\ihom[']{X}{Y} ≔ \glob{V}{𝟙}{\ihom{X}{Y}}\).
+
+An \emph{enrichment} of a category \(C\) is an enriched category for \(C_0\), together with an isomorphism of categories \(C ≅ Γ^*C'\) with, in particular, \(\expi{-}\colon \hom{C}{X}{Y} ≅ \glob{V}{𝟙}{\ihom{X}{Y}}\).%, witnessing the agreement of external and internal homs.
+
+An \emph{enriched functor} between an enriched categories \((C',\ihom{}{})\), \((D',\ihom[']{}{})\) for \(C_0,D_0\), and a function \(F_0 \colon \hom{\mathsf{Set}}{C_0}{D_0}\) has an internal functorial action \(F_1' \colon \hom{V}{\ihom{X}{Y}}{\ihom[']{F_0 X}{F_0 Y}'}\).
+
+Given categories \(C, D\) with enrichments \((EC,\ihom{}{},\expi{-})\) and \((ED,\ihom[']{}{},\expi{-}')\), an \emph{enrichment} of a functor \(F \colon C → D\) is an enriched functor for \(F_0\) such that \(F_1\) and \(F_1'\) \emph{agree}: \(∀ f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; F_1'\).
+
+Fix monoidal categories \((M,*,I)\) and \((N,⊗,J)\). A \emph{lax monoidal functor} \(F \colon M → N\) has comparison arrows: \(ε \colon \hom{N}{J}{F I}\) and \(μ_{X,Y} \colon \hom{N}{F X ⊗ F Y}{F (X * Y)}\). It \emph{preserves underlying categories}~\cite[Def.~3.6]{weideUnivalentEnrichedCategories2026} if \(\hat{ε}_X ≔ ε ; F_1– \colon \hom{\mathsf{Set}}{\ehom{M}{I}{X}}{\ehom{N}{J}{F X}}\) is a bijection.
+
+Let \((C',\ihom{}{})\) be an \(M\)-enriched category for \(C_0\). Let \(F\colon M → N\) be a lax monoidal functor. We can define an \(N\)-enriched category \((F^*C',\ihom[']{}{})\) for \(C_0\) called \emph{the base-change of \(C\) along \(F\)} with \(\ihom[']{X}{Y} ≔ F (\ihom{X}{Y})\). If \(F\) additionally preserves underlying categories, it induces a change of base of \emph{enrichment}. For \((EC,\expi{-})\) set \((F^*(EC),\expi{-};\hat{ε})\).
+
 
 \paragraph{Locally Contractive Functors}
 In the following, let \(V\) be a model of guarded recursive terms \cite[Def.~6.1]{birkedalFirstStepsSynthetic2012}. And categories \(C,D\) with enrichments \((EC,\expi{-}), (ED,\expi{-}')\) in \(V\).
@@ -274,7 +274,7 @@ We introduce the following corollary for the special case where one has a functo
 \begin{corollary}[\agdaref{Cubical.Categories.Enriched.Enrichment.LocallyContractive}{isLocallyContractive}{}]
   \label{cor1}
 A functor \(F \colon C → D\) is \emph{locally contractive} if it has as enrichment the sequence of enrichments \(EC \xrightarrow{\mathsf{next}} ▷EC \xrightarrow{F'} ED\), i.e. % TODO: explain enrichmentFor!
-\[∀ x, y : C_0,\, f : C[x,y].\ \expi{F_1 f}' = \expi{f} ; \mathsf{next} ; F_1' \]
+\[∀ x, y : C_0,\, f : \hom{C}{x}{y}.\ \expi{F_1 f}' = \expi{f} ; \mathsf{next} ; F_1' \]
 \end{corollary}
 
 Surprisingly enough to us, as far as we are aware, noone in the literature has stated the following corollary:
@@ -295,30 +295,14 @@ With Corollaries \ref{cor1} and \ref{cor2} we have the formalisation of our stat
 \item an enrichment of \(\mathsf{Set}^A\) (we can do better: more generally of \(𝒞^A\) for locally small \(𝒞\)) in \(V\).
 \end{enumerate*}
 For the former, following \cite{stepanenkoSolvingGuardedDomain2025} we chose presheaves over \((A,<)\).
-For the latter, first note that \(𝒞^A\) is enriched in the monoidal category \(\mathsf{Set}^A\) with \(ℰ_{X,Y} ≔ \prod_{a ∈ A} 𝒞[X a, Y a]\). It remains to transport this enrichment over to \(\mathsf{Psh}(A,<)\), which we proceed to do in the following.
-\paragraph{Change of Base}
-Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
-\begin{definition}[Lax monoidal functor {\cite[Def.~2.1.1]{cruttwell2008normed}} \agdaref{Cubical.Categories.Monoidal.Functor}{LaxMonoidalFunctor}{}]
-  A functor \(F \colon M → N\) is \emph{lax monoidal} if it has comparison arrows: \begin{itemize*}[itemjoin=~]
-\item \(ε \colon N[J, F I]\), and
-\item \(μ_{X,Y} \colon N[F x ⊗ F Y, F (x * y)]\) agreeing with the unitors and associators of \(M\) and \(N\).
-\end{itemize*}
-\begin{definition}[Preservation of Underlying Categories {\cite[Def.~3.6]{weideUnivalentEnrichedCategories2026}} \agdaref{Cubical.Categories.Monoidal.Functor}{preservesUnderlyingCategories}{}]
-  A lax monoidal functor \(F \colon M → N\) preserves underlying categories if \(\hat{ε}_A ≔ ε ; F_1– \colon M[I,A] → N[J, F A]\) is a bijection.
-\end{definition}
-Spoiler: This requirement is necessary for \(F^*(EC)\) to preserve \(C\) – \(F^*(EC).\expi{–} ≔ EC.\expi{–} ; \hat{ε}\).
-\end{definition}
-\begin{proposition}[Change of Base {\cite[Ex.~3.7]{weideUnivalentEnrichedCategories2026}}\agdaref{Cubical.Categories.Enriched.Enrichment.BaseChange.Base}{BaseChange}{}]
-  Let \(EC\) be an enrichment of category \(C\) in \(M\). Let \(F\colon M → N\) be a lax monoidal functor which preserves underlying categories. We can define an enrichment \(F^*(EC)\) of \(C\) in \(N\) which we call the base-change of \(EC\) along \(F\).
-\end{proposition}
+For the latter, first note that \(𝒞^A\) is enriched in the monoidal category \(\mathsf{Set}^A\) with \(ℰ_{X,Y} ≔ \prod_{a ∈ A} \hom{𝒞}{X a}{Y a}\). It remains to transport this enrichment over to \(\mathsf{Psh}(A,<)\), which we proceed to do in the following.
+
+
 Returning to our objective, it remains to define a lax monoidal functor which preserves underlying categories from \(\mathsf{Set}^A\) to \(\mathsf{Psh}(A,<)\).
-The functor that does the job is the \emph{cofree presheaf functor}: \(U ⊣ \mathsf{Cofree}\), \(\mathsf{Cofree}(B)(x) ≔ \prod_y \mathsf{Set}[A[x,y],B(y)]\) (here \(A[x,y] = x ≤ y\)).
-\begin{proposition}[\agdaref{Cubical.Categories.Enriched.Enrichment.Instances.Power}{Cᴬ-Psh-Enrichment}{}]
-  \textsf{Cofree} is a lax monoidal functor preserving underlying categories.
-\end{proposition}
-\begin{proof}[Proof sketch]
-  Its lax monoidal structure derives from the fact that as right adjoint it preserves limits. Preservation of underlying categories follows from \(\mathsf{Cofree}\) preserving terminal objects, followed by transposition along the adjunction.
-\end{proof}
+The functor that does the job is the \emph{cofree presheaf functor}: \(U ⊣ \mathsf{Cofree}\), \(\mathsf{Cofree}(B)(x) ≔ \prod_y \hom{\mathsf{Set}}{A[x,y]}{B(y)}\) (here \(\hom{A}{x}{y} = x ≤ y\)).
+\paragraph{The Prestige}
+\label{sec:prestige}
+
 \paragraph{Coda}
 Thus, we find ourselves with with what we wanted from the outset: When working in the power category \(𝒞^A\) for some well founded order \(A,<\), as one does when defining intrinsically correct algorithms, one can express termination of an algorithm defined as a coalgebra-to-algorithm by proving that the functor \(F\) for which it is defined is locally contractive. This procedure is precisely the formal counterpart to what we layed out in \nameref{sec:intro} and elaborated in \nameref{sec:bridge}. The incomplete Agda development accompanying this work is at \url{https://github.com/um-catlab/cubical-categorical-logic/tree/guarded-enriched}
 
