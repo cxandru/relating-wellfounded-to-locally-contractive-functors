@@ -208,7 +208,7 @@ A coalgebra-to-algebra morphism \(h\) is called a \emph{hylomorphism} if it is t
 Note that in a non-total programming language, \texttt{h := c ; F h ; a} \emph{is already} a definition.
 Our goal is to recover a similar definition scheme in a \emph{total} language.
 
-This challenge becomes easier to tackle when we take partial correctness into account. Continuing with our Quicksort example, we home in on its coalgebra, \textsf{partition}. Its type, \(A^* → 1 + A^* × A^*\) is really too coarse. The partial correctness of \textsf{partition} entails, in particular, that the output \(B (A^*)\) value contain the same \emph{elements} as the input.
+This challenge becomes easier to tackle when we take partial correctness into account. Continuing with our Quicksort example, we home in on its coalgebra, \textsf{partition}. Its type, \(A^* → 1 + A^*× A × A^*\) is really too coarse. The partial correctness of \textsf{partition} entails, in particular, that the output \(B (A^*)\) value contain the same \emph{elements} as the input.
 One approach to refine its type in order to capture this, due to \cite{AlexandruCRW25}, is to move to the setting of \emph{families} in \textsf{Set} indexed by the set \(ℳA\) of finite multisets of element type \(A\).
 The refined \(B\) becomes \(\overline{B}\) (expressed for better comprehensibility in the slice category \(\mathsf{Set}/ℳA\) instead of in \(\mathsf{Fam}(ℳA) = \mathsf{Set}^{ℳA}\)) :
 \[
