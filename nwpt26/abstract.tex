@@ -170,9 +170,11 @@ https://partiallyapplied.eu/ictfp/%
 
 \maketitle
 
-We present a novel way to define recursive algorithms in functional languages such that they are intrinsically correct and terminating.
-Following the paradigm of structured recursion~\cite{hinzeConjugateHylomorphismsMother2015}, the recursion behavior of divide-and-conquer algorithms can be separated from their recursive steps, which can be expressed categorically as (co)algebras for a functor.
-We show how functors for intrinsically correct functional algorithms can be expressed as being \emph{locally contractive} \cite{birkedalFirstStepsSynthetic2012}. Termination of these algorithms then holds intrinsically.
+The definition of recursive algorithms in verified total functional programming engenders two proof obligations: partial correctness and termination.
+Often, partial correctness properties already entail facts from which termination follows.
+We exploit such cases through a novel way to define recursive algorithms such that they are intrinsically correct and terminating.
+Following the paradigm of structured recursion~\cite{hinzeConjugateHylomorphismsMother2015}, we separate the recursion behavior of divide-and-conquer algorithms from their recursive steps, which can be expressed categorically as (co)algebras for a functor.
+We give conditions under which functors for intrinsically correct algorithms are \emph{locally contractive} \cite{birkedalFirstStepsSynthetic2012}, and show how termination of algorithms for such functors holds intrinsically.
 
 \paragraph{Motivation}
 Expressing recursive algorithms using coalgebra-to-algebra morphisms has a long history \cite{CaprettaUV06,jeanninWellfoundedCoalgebrasRevisited2017,taylor99,meijerFunctionalProgrammingBananas1991}.
