@@ -175,7 +175,7 @@ https://partiallyapplied.eu/ictfp/%
 % version for the running heads. When processed by
 % EasyChair, this command is mandatory: a document without \titlerunning
 % will be rejected by EasyChair
-\titlerunning{Intrinsically correct \& total fp}
+\titlerunning{Intrinsically correct \& total fp using lcf}
 \begin{document}
 
 \maketitle
@@ -244,7 +244,7 @@ The refined type of \(\mathsf{partition}\) now encodes that the output triple co
 \mathsf{toBag}(i)\uplus \{p\} \arrow[r,equal] &  \mathsf{toBag}(i_{≤ p}) \uplus \{p\} \uplus \mathsf{toBag}(i_{> p})
 \end{tikzcd}
 \]
-The thing of note is the following: The multiset indices in functorial positions are smaller than the result index: \(f(l),f(r) < f(l) \uplus \{p\} \uplus f(r)\). We proceed to sketch how functors with this property yield solutions to \eqref{eq:hylo}, yielding in this case an intrinsically correct and terminating implementation of QuickSort. We show that \(\overline{B}\) has this property in \nameref{sec:prestige}.
+The thing of note is the following: The multiset indices in functorial positions are smaller than the result index: \(f(l),f(r) < f(l) \uplus \{p\} \uplus f(r)\). We proceed to sketch how functors with this property yield solutions to \eqref{eq:hylo}, yielding in this case an intrinsically correct and terminating implementation of Quicksort. We show that \(\overline{B}\) has this property in \nameref{sec:prestige}.
 
 \paragraph{Sketch}\label{sec:intro}
 We generalize to any functor \(F\) on a power category \(𝒞^A\) with \((A,<)\) a well founded ordering, where \enquote{the indices in functorial positions are smaller than the result index}. Such a functor gives solutions to \eqref{eq:hylo}: since the functorial indices are smaller, we construct \(h\) pointwise as an inhabitant of \(\ehom{𝒞^A}{I}{O}\) using well founded recursion: 
@@ -266,17 +266,17 @@ We fix a monoidal category \((V,⊗,𝟙)\).
   An \emph{enrichment} of a category \(C\) is an enriched category for \(C_0\), together with an isomorphism of categories \(C ≅ Γ^*C'\) with, in particular, \(\expi{-}\colon \hom{C}{X}{Y} ≅ \glob{V}{𝟙}{\ihom{X}{Y}}\).%, witnessing the agreement of external and internal homs.
 \end{definition}
 
-\begin{example}\label{ex:fam}
-  \(\mathsf{Fam}(A)\) is monodial, inheriting that structure pointwise from \(\mathsf{Set}\). In particular, \(𝟙 = ∀ (i ∈ A).\, 𝟙_{\mathsf{Set}} ≅ A\).
+\begin{example}[\agdaref{Cubical.Categories.Enriched.Enrichment.Instances.Power}{Cᴬ-Enrichment}{}]\label{ex:fam}
+  \(\mathsf{Fam}(A)\) is monoidal, inheriting that structure pointwise from \(\mathsf{Set}\). In particular, \(𝟙 = ∀ (i ∈ A).\, 𝟙_{\mathsf{Set}} ≅ A\).
   \(𝒞^A\) is enriched in \(\mathsf{Fam}(A)\) with \((\ihom{X}{Y}) i = \hom{\mathsf{Set}}{X i }{Y i}\) and \(\expi{-}\colon \hom{\mathsf{Set}^{A}}{X }{Y} = ∀ (i ∈ A).\, \hom{\mathsf{Set}}{X i }{Y i} ≅ ∀ (i ∈ A).\, \hom{\mathsf{Set}}{𝟙_{\mathsf{Set}}}{\hom{\mathsf{Set}}{X i }{Y i}} = \hom{\mathsf{Set}^{A}}{𝟙}{\ihom{X}{Y}}\).
 \end{example}
 
-\begin{definition}
-  A \emph{model of guarded recursive terms}~\cite[Def.~6.1]{birkedalFirstStepsSynthetic2012} for a monoidal category \(E\) has a strong monoidal endofunctor \(▸ \colon E → E\), a natural transformation \(\mathsf{next} \colon \hom{[E,E]}{\mathsf{Id}}{▸}\), and a fixpoint principle called \emph{Löb Induction}: \(∀ H \colon \hom{E}{▸ P}{P}.\ ∃!\, \mathrm{Löb}H \colon ΓP.\, \mathrm{Löb}H = \mathrm{Löb}H; \mathsf{next}; H\).
+\begin{definition}[\agdaref{Cubical.Categories.Monoidal.Guarded}{GuardedModel}{}]
+  A \emph{model of guarded recursive terms}~\cite[Def.~6.1]{birkedalFirstStepsSynthetic2012} for a monoidal category \(E\) has a strong monoidal endofunctor \(▸ \colon E → E\), a natural transformation \(\mathsf{next} \colon \hom{[E,E]}{\mathsf{Id}}{▸}\), and a fixpoint principle called \emph{Löb induction}: \(∀ H \colon \hom{E}{▸ P}{P}.\ ∃!\, \mathsf{Löb}H \colon ΓP.\, \mathsf{Löb}H = \mathsf{Löb}H; \mathsf{next}; H\).
 \end{definition}
 
-\begin{example}\label{ex:pshguard}
-  \(\mathsf{PSh}(A,<)\) is a model of guarded recursive terms~\cite{stepanenkoSolvingGuardedDomain2025}. Concretely, \(▸ P i = ∀ j < i.\, P j\); \(\mathsf{next}\) is given by the presheaf's restriction maps; instantiating the type of \(\mathrm{Löb}\) we see that it corresponds precisely to well founded induction / recursion: \((∀ i .\, (∀ j < i.\, P j) → P i) → ∀ i .\, P i\).
+\begin{example}[\agdaref{Cubical.Categories.Direct.Guarded.Presheaf}{pshGuarded}{}]\label{ex:pshguard}
+  \(\mathsf{PSh}(A,<)\) is a model of guarded recursive terms~\cite{stepanenkoSolvingGuardedDomain2025}. Concretely, we have \(▸ P i = ∀ j < i.\, P j\); \(\mathsf{next}\) is given by the presheaf's restriction maps; instantiating the type of \(\mathsf{Löb}\) we see that it corresponds precisely to well founded recursion: \((∀ i .\, (∀ j < i.\, P j) → P i) → ∀ i .\, P i\).
 \end{example}
 
 We fix monoidal categories \((M,*,I)\) and \((N,⊗,J)\).
@@ -290,16 +290,16 @@ We fix monoidal categories \((M,*,I)\) and \((N,⊗,J)\).
 \begin{definition}
   The \emph{cofree presheaf functor} \(\mathsf{Cofree} \colon  \mathsf{Fam}(A) → \mathsf{PSh}(A,<)\) is the right adjoint to the forgetful functor \(U \colon \mathsf{PSh}(A,<) → \mathsf{Fam}(A)\) with \(\mathsf{Cofree}\, X i = ∀ j ≤ i. \, X i\). It is lax monoidal and preserves underlying categories.
 \end{definition}
-\begin{example}[\agdaref{Cubical.Categories.Enriched.Enrichment.Instances.Power}{Cᴬ-Psh-Enrichment}{}]\label{ex:fampsh}
+\begin{theorem}[\agdaref{Cubical.Categories.Enriched.Enrichment.Instances.Power}{Cᴬ-Psh-Enrichment}{}]\label{ex:fampsh}
 \(𝒞^A\) is enriched in \(\mathsf{PSh}(A,<)\), with the enrichment given by change-of-base of its enrichment in \(\mathsf{Fam}(A)\) (\autoref{ex:fam}) along \(\mathsf{Cofree}\).
-\end{example}
+\end{theorem}
 
 \begin{definition}
   An \emph{enriched functor} between enriched categories \((C',\ihom{}{})\), \((D',\ihom[']{}{})\) for \(C_0,D_0\), and a map \(F_0 \colon \hom{\mathsf{Set}}{C_0}{D_0}\), has an internal functorial action \(F_1' \colon \hom{V}{\ihom{X}{Y}}{\ihom[']{F_0 X}{F_0 Y}'}\).
   Given categories \(C, D\) with enrichments \((\expi{-})\) and \((\expi{-}')\), an \emph{enrichment} of a functor \(F \colon C → D\) is an enriched functor for \(F_0\) such that \(F_1\) and \(F_1'\) \emph{agree}: \(∀ f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; F_1'\).
 \end{definition}
 
-\begin{definition}
+\begin{definition}[\agdaref{Cubical.Categories.Enriched.Enrichment.LocallyContractive}{isLocallyContractive}{}]
   Fix \(V\) a model of guarded recursive terms, categories \(C,D\) with \(V\)-enrichments \((EC,\expi{-}), (ED,\expi{-}')\).
   A functor \(F \colon C → D\) is \emph{locally contractive}~\cite[Def.~6.1]{birkedalFirstStepsSynthetic2012}, if there exists an enriched functor \(F_1' \colon ▸^*(EC) → ED\) for \(F_0\) such that the sequence \(EC \midarrow{\mathsf{next}} ▸^*(EC) \midarrow{F'} ED\) is an enrichment of \(F\), i.e.
   \(∀ f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; \mathsf{next} ; F_1'\)
@@ -313,27 +313,26 @@ We fix monoidal categories \((M,*,I)\) and \((N,⊗,J)\).
 Locally contractive functors give rise to hylomorphisms.
 \end{theorem}
 \begin{proof}[Proof sketch]
-Note that in \eqref{eq:hylo}, the functional\footnote{higher-order function} \(H(f) ≔ c ; f ; a\) has type \(\hom{V}{(\ihom{F_0 I}{F_0 O})}{(\ihom{I}{O})}\). Local contractivity of \(F\) gives us \(F_1' \colon \hom{V}{▸ (\ihom{I}{O})}{(\ihom{F_0 I}{F_0 O})}\). Putting them together we get \(▸ (\ihom{I}{O}) \midarrow{F_1'} (\ihom{F_0 I}{F_0 O}) \midarrow{H} (\ihom{I}{O})\). Applying \(\mathrm{Löb} \colon (▸ (\ihom{I}{O}) → (\ihom{I}{O})) → \glob{V}{𝟙}{\ihom{I}{O}}\) gives us \(\expi{\mathrm{Löb} (F_1' ; H)} \colon (\hom{C}{I}{O})\).
+Note that in \eqref{eq:hylo}, the functional\footnote{higher-order function} \(H(f) ≔ c ; f ; a\) has type \(\hom{V}{(\ihom{F_0 I}{F_0 O})}{(\ihom{I}{O})}\). Local contractivity of \(F\) gives us \(F_1' \colon \hom{V}{▸ (\ihom{I}{O})}{(\ihom{F_0 I}{F_0 O})}\). Putting them together we get \(▸ (\ihom{I}{O}) \midarrow{F_1'} (\ihom{F_0 I}{F_0 O}) \midarrow{H} (\ihom{I}{O})\). Applying \(\mathsf{Löb} \colon (▸ (\ihom{I}{O}) → (\ihom{I}{O})) → \glob{V}{𝟙}{\ihom{I}{O}}\) gives us \(\expi{\mathsf{Löb} (F_1' ; H)} \colon (\hom{C}{I}{O})\).
 \end{proof}
 
 \paragraph[The Prestige]{The Prestige\footnote{\url{https://www.goodreads.com/quotes/91029-every-great-magic-trick-consists-of-three-parts-or-acts\#:~:text="The Prestige"}}}
 \label{sec:prestige}
-Enriching the category of families in presheaves (\autoref{ex:fampsh}) allows us to express what it means for the Quicksort functor \(\overline{B}\colon \mathsf{Fam}(ℳA) → \mathsf{Fam}(ℳA)\) to be locally contractive. We state its contractive action below. What allows us to define it is precisely that the indices in functorial positions are smaller than the result index.
+Enriching the category of families in presheaves (\autoref{ex:fampsh}) allows us to express what it means for the Quicksort functor \(\overline{B}\colon \mathsf{Fam}(ℳA) → \mathsf{Fam}(ℳA)\) to be locally contractive. We state its contractive action \(\overline{B}' \colon \hom{\mathsf{Fam}(A)}{▸ (\ihom{X}{Y})}{(\ihom{\overline{B}X}{\overline{B}Y})}\) below. What allows us to define it is precisely that the indices in functorial positions are smaller than in the result.
 \begin{equation*}
   \begin{alignedat}{9}
-    &\overline{B}' \;&&\mathrlap{\colon \hom{\mathsf{Fam}(A)}{▸ (\ihom{X}{Y})}{(\ihom{\overline{B}X}{\overline{B}Y})}} \\
-    &\overline{B}'   &&(i = ∅)\ &&f\ &&* &&≔ * \\
-    &\overline{B}'   &&(i = j \uplus \{p\} \uplus k)\ &&(f \colon ∀ (j < i).\, X j → Y j)\\
-    &                &&&&(l ∈ X j, p , r ∈ X k) &&&&≔(f l , p , f r)
+    &\overline{B}' \;&&\mathrlap{\colon ∀ i .\, \hom{𝒞}{(∀ j < i.\, \hom{𝒞}{X j}{Y j})}{(\hom{𝒞}{\overline{B}X i}{\overline{B}Y i})}} \\
+    &\overline{B}'   &&(i = ∅)\ &&f\ &&\ * &&≔ * \\
+    &\overline{B}'   &&(i = j \uplus \{p\} \uplus k)\ &&f &&(l ∈ X j, p , r ∈ X k) &&≔(f l , p , f r)
   \end{alignedat}
 \end{equation*}
 Consequently, we instantiate \autoref{thm} to obtain that Quicksort intrinsically terminates as a coalgebra-to-algebra morphism for \(\overline{B}\).
 
 \paragraph{Related Work}
-Our approach of showing functors for intrinsically correct algorithms to be locally contractive to intrinsically obtain termination is quite similar to the the approach of showing such functors to be \emph{well founded}~\cite{alexandruIntrinsicallyCorrectAlgorithms2026}, also obtaining termination intrinsically. We conjecture that well founded functors are locally contractive, which would make our result stronger.
+Our approach of showing functors for intrinsically correct algorithms to be locally contractive to intrinsically obtain termination is quite similar to the the approach of showing such functors to be \emph{well founded}~\cite{alexandruIntrinsicallyCorrectAlgorithms2026}, also obtaining termination intrinsically. We conjecture that well founded functors are locally contractive, which would make our result stronger. Exploring the connection fully remains future work.
 
 \paragraph{Conclusion}
-We began with intrinsically correct algorithms expressed as coalgebra-to-algebra morphisms in a category \(𝒞^A\) for some functor \(F\). If \(A\) can be equipped with a well founded ordering, \(𝒞^A\) can be enriched in \(\mathsf{PSh}(A,<)\) and, if \(F\) is locally contractive in the context of this enrichment, algorithms for \(F\) intrinsically terminate.
+We began with intrinsically correct algorithms expressed as coalgebra-to-algebra morphisms in a category \(𝒞^A\) for some functor \(F\). If \(A\) can be equipped with a well founded ordering, \(𝒞^A\) can be enriched in \(\mathsf{PSh}(A,<)\) and, if \(F\) is locally contractive for this enrichment, algorithms for \(F\) intrinsically terminate. We demonstrated the technique on Quicksort.
 
 The incomplete Agda development accompanying this work is at \url{https://github.com/um-catlab/cubical-categorical-logic/tree/guarded-enriched}
 
