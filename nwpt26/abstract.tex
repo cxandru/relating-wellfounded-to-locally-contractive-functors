@@ -267,8 +267,8 @@ We fix a monoidal category \((V,⊗,𝟙)\).
 \end{definition}
 
 \begin{example}[\agdaref{Cubical.Categories.Enriched.Enrichment.Instances.Power}{Cᴬ-Enrichment}{}]\label{ex:fam}
-  \(\mathsf{Fam}(A)\) is monoidal, inheriting that structure pointwise from \(\mathsf{Set}\). In particular, \(𝟙 = ∀ (i ∈ A).\, 𝟙_{\mathsf{Set}} ≅ A\).
-  \(𝒞^A\) is enriched in \(\mathsf{Fam}(A)\) with \((\ihom{X}{Y}) i = \hom{\mathsf{Set}}{X i }{Y i}\) and \(\expi{-}\colon \hom{\mathsf{Set}^{A}}{X }{Y} = ∀ (i ∈ A).\, \hom{\mathsf{Set}}{X i }{Y i} ≅ ∀ (i ∈ A).\, \hom{\mathsf{Set}}{𝟙_{\mathsf{Set}}}{\hom{\mathsf{Set}}{X i }{Y i}} = \hom{\mathsf{Set}^{A}}{𝟙}{\ihom{X}{Y}}\).
+  \(\mathsf{Fam}(A)\) is monoidal, inheriting that structure pointwise from \(\mathsf{Set}\). In particular, \(𝟙 = ∀ i ∈ A.\, 𝟙_{\mathsf{Set}} ≅ A\).
+  \(𝒞^A\) is enriched in \(\mathsf{Fam}(A)\) with \((\ihom{X}{Y}) i = \hom{\mathsf{Set}}{X i }{Y i}\) and \(\expi{-}\colon \hom{\mathsf{Set}^{A}}{X }{Y} = ∀ i ∈ A.\, \hom{\mathsf{Set}}{X i }{Y i} ≅ ∀ i ∈ A.\, \hom{\mathsf{Set}}{𝟙_{\mathsf{Set}}}{\hom{\mathsf{Set}}{X i }{Y i}} = \hom{\mathsf{Set}^{A}}{𝟙}{\ihom{X}{Y}}\).
 \end{example}
 
 \begin{definition}[\agdaref{Cubical.Categories.Monoidal.Guarded}{GuardedModel}{}]
