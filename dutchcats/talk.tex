@@ -83,10 +83,10 @@
 \newunicodechar{↿}{\ensuremath{\!}}
 \newcommand{\sle}{\sqsubseteq} %sort \le
 \newcommand{\sgt}{\sqsupset} %sort \ge
-\newcommand{\inl}{\ensuremath{\mathsf{inl}}}
-\newcommand{\inr}{\ensuremath{\mathsf{inr}}}
-\newcommand{\id}{\ensuremath{\mathsf{id}}}
-\newcommand{\sort}{\mathsf{sort}}
+\newcommand{\inl}{\ensuremath{\mathrm{inl}}}
+\newcommand{\inr}{\ensuremath{\mathrm{inr}}}
+\newcommand{\id}{\ensuremath{\mathrm{id}}}
+\newcommand{\sort}{\mathrm{sort}}
 \newunicodechar{⊒}{\ensuremath{\sgt}}
 \newunicodechar{⊑}{\ensuremath{\sle}}
 \newunicodechar{ₗ}{\ensuremath{_l}}
@@ -204,12 +204,12 @@ inner sep=0pt,minimum size=1cm}}
 \author[Alexandru, Schaefer, New]{
   Cass Alexandru\inst{1} \and Steven Schaefer\inst{2} \and Max New\inst{2}
 }
-\institute[R(PT)U \& UM]{%
+\institute[RPTU/RU \& UM]{%
 \inst{1}RPTU Kaiserslautern-Landau \& Radboud University Nijmegen
 \and
 \inst{2} University of Michigan
 }
-\date{2026-11-05}
+\date{2026-11-12}
 \renewcommand<>{\emph}[1]{{\only#2{\bfseries}#1}}
 \renewcommand{\hom}[3]{\ensuremath{#2 → #3}}
 \newcommand{\ehom}[3]{\ensuremath{#1\left(#2 , #3\right)}} % explicit hom
@@ -235,24 +235,48 @@ inner sep=0pt,minimum size=1cm}}
 
 \begin{frame}[fragile]
   \frametitle{QuickSort as a Coalgebra-to-Algebra Morphism\footnote{due to \cite{CaprettaUV06}}}
-\begin{columns}
-  \begin{column}[t]{.7\textwidth}
-    \begin{tikzcd}[ampersand replacement=\&,
-every arrow/.append style={mapsto},column sep=2cm]
- {(i_{≤ p}, p, i_{> p})} \arrow[r, "\mathsf{sort} \times \mathrm{id}\times \mathsf{sort}"] \& {(\mathsf{sort}(i_{≤ p}), p, \mathsf{sort}(i_{> p}))} \arrow[d, "\mathsf{concat}"] \\
-ip \arrow[u,"\mathsf{partition}"] \arrow[r,"\mathsf{sort}"] \&  {\mathsf{sort}(i_{≤ p})\, p\, \mathsf{sort}(i_{> p})}
-\end{tikzcd}
-\end{column}\hfill
-\begin{column}[t]{.3\textwidth}
-\begin{tikzcd}
-FI \arrow[r, "Fh"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{\refstepcounter{equation}(\theequation)\label{eq:square}} & FO \arrow[d, "a"] \\
-I \arrow[u,"c"] \arrow[r,"h"] &  O
-\end{tikzcd}
-  \end{column}
+\tikzcdset{
+  uniform/.style={
+    row sep=1cm,
+    cells={nodes={text height=1.6ex, text depth=.6ex}},
+  }
+}
+\begin{columns}[t]
+\begin{column}{.68\linewidth}
+  \begin{figure}
+    \centering
+    \makebox[\linewidth][c]{%
+    \begin{tikzcd}[ampersand replacement=\&, uniform,
+      every arrow/.append style={mapsto}, column sep=1.8cm]
+      (i_{\le p}, p, i_{> p})
+        \arrow[r, "\mathrm{sort}\times\mathrm{id}\times\mathrm{sort}"]
+      \& (\mathrm{sort}(i_{\le p}), p, \mathrm{sort}(i_{> p}))
+        \arrow[d, "\mathrm{concat}"] \\
+      ip \arrow[u, "\mathrm{partition}"] \arrow[r, "\mathrm{sort}"]
+      \& \mathrm{sort}(i_{\le p})\, p\, \mathrm{sort}(i_{> p})
+    \end{tikzcd}}
+    \caption{quicksort recursive case}
+  \end{figure}
+\end{column}
+\begin{column}{.28\linewidth}
+  \begin{figure}
+    \centering
+    \begin{tikzcd}[ampersand replacement=\&, uniform]
+      F_0I \arrow[r, "F_1h"]
+           \arrow[phantom, dr, start anchor=center, end anchor=center,
+                  "\refstepcounter{equation}(\theequation)\label{eq:hylo}" description]
+      \& F_0O \arrow[d, "a"] \\
+      I \arrow[u, "c"] \arrow[r, "h"] \& O
+    \end{tikzcd}
+    \caption{c2a-morphism}
+  \end{figure}
+\end{column}
 \end{columns}
+
+
 \begin{itemize}
-\item for \(\mathsf{partition}\): \(F ≔ B \) for \(B X ≔ 1 + X × A × X\), \(\quad I ≔ A^*\).
-\item A c2a-morphism \(h\) is called a \emph{hylomorphism} if it is the unique c2a-morphism making \eqref{eq:square} commute, i.e. \eqref{eq:square} functions as a \emph{definition}.
+\item for \(\mathrm{partition}\): \(F ≔ B \) for \(B X ≔ 1 + X × A × X\), \(\quad I ≔ A^*\).
+\item A c2a-morphism \(h\) is called a \emph{hylomorphism} if it is the unique c2a-morphism making \eqref{eq:hylo} commute, i.e. \eqref{eq:hylo} functions as a \emph{definition}.
 \item NB: In a non-total programming language, \texttt{h := c ; F h ; a} \emph{is already} a definition. \emph{Goal}: recover a similar definition scheme in a \emph{total} language.
 \end{itemize}
 \end{frame}
@@ -260,8 +284,8 @@ I \arrow[u,"c"] \arrow[r,"h"] &  O
 \begin{frame}[fragile]
   \frametitle{Pars pro Toto : Total from Partial Correctness}
   \begin{itemize}
-  \item The type \(\hom{\mathsf{Set}}{A^*}{1 + A^* × A × A^*}\) for \(\mathsf{partition}\) is \emph{too coarse!}
-  \item As \cite{AlexandruCRW25}: Move to \(\mathsf{Set}/{ℳ\!A}\)
+  \item The type \(\hom{\mathrm{Set}}{A^*}{1 + A^* × A × A^*}\) for \(\mathrm{partition}\) is \emph{too coarse!}
+  \item As \cite{AlexandruCRW25}: Move to \(\mathrm{Set}/{ℳ\!A}\)
   \end{itemize}
   \vspace{\baselineskip}%
 \[
@@ -282,8 +306,8 @@ I \arrow[u,"c"] \arrow[r,"h"] &  O
 \]
 \[
   \begin{tikzcd}[every arrow/.append style={mapsto},column sep=2cm,every label/.append style={font=\normalsize}]
- {ip} \arrow[r, "\mathsf{partition}"]\arrow[d, "\mathsf{toBag}"] & {(i_{≤ p}, p, i_{> p})} \arrow[d, "\mathsf{toBag} ⊗ \{–\} ⊗ \mathsf{toBag}"] \\
-\idxbox{oiPurple}{\mathsf{toBag}(i)\uplus \{p\}} \arrow[r,equal] &  \idxbox{oiPurple}{{\idxbox{oiBlue}{\mathsf{toBag}(i_{≤ p})} \uplus \{p\} \uplus \idxbox{oiOrange}{\mathsf{toBag}(i_{> p})}}}
+ {ip} \arrow[r, "\mathrm{partition}"]\arrow[d, "\mathrm{toBag}"] & {(i_{≤ p}, p, i_{> p})} \arrow[d, "\mathrm{toBag} ⊗ \{–\} ⊗ \mathrm{toBag}"] \\
+\idxbox{oiPurple}{\mathrm{toBag}(i)\uplus \{p\}} \arrow[r,equal] &  \idxbox{oiPurple}{{\idxbox{oiBlue}{\mathrm{toBag}(i_{≤ p})} \uplus \{p\} \uplus \idxbox{oiOrange}{\mathrm{toBag}(i_{> p})}}}
 \end{tikzcd}
 \]
 
@@ -300,7 +324,7 @@ I \arrow[u,"c"] \arrow[r,"h"] &  O
   \item Observation: \enquote{indices in functorial positions are smaller than the input index}
   \end{itemize}
   \begin{columns}
-    \begin{column}{0.3\textwidth}
+    \begin{column}{0.3\linewidth}
   \begin{equation*}
 \begin{tikzcd}[sep=1.3cm, every label/.append style={font=\normalsize}]
 FI \arrow[r, "F{h\alert{\mid_{<i}}}"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{(1)} & FO \arrow[d, "a_i"] \\
@@ -308,7 +332,7 @@ I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
 \end{tikzcd}
   \end{equation*}
 \end{column}
-\begin{column}{0.3\textwidth}
+\begin{column}{0.3\linewidth}
   \begin{align*}
     h_{\alert{i}} &= c_i ; (F (h\alert{|_{<i}}))_i ; a_i
   \end{align*}
@@ -317,7 +341,7 @@ I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
 
   \begin{itemize}
   \item \(⇒\) we could construct a solution to (1) \enquote{as an inhabitant of the homset using well founded recursion}!
-\item Next: How this is \emph{made formal}. We begin with moving from Hom-\emph{sets} to Hom-\emph{objs} for some category with the requisite structure for constructing an inhabitant using well founded recursion
+\item Next: How this is \emph{made formal}. We begin with moving from Hom-\emph{sets} to Hom-\emph{objs} for some category which exposes structure to construct objects using well founded recursion
   \end{itemize}
 \end{frame}
 
@@ -325,7 +349,7 @@ I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
   \frametitle{Plan}
   \begin{itemize}
   \item \emph{Enrichment of a Category}: Give hom objects the structure we need to do \(\dots\)
-  \item \emph{Guarded recursion}: a way to construct hom objects using well founded recursion.
+  \item \emph{Guarded recursion}: abstract interface to construct hom objects using well founded recursion.
   \item \emph{Enrichment of a Functor}: Notion need to express \(\dots\)
   \item \emph{Locally Contractive Functors}: Functors which give rise to hylomorphisms via guarded recursion.
   \end{itemize}
@@ -339,17 +363,17 @@ I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
  Fix a set of objects \(C_0\) and a monoidal category \((V,⊗,𝟙)\).
 \begin{definition}[Enriched category]
   \begin{itemize}
-  \item for every \(X, Y \colon C_0\) the internal Hom \(\ihom{X}{Y}\);
-  \item \textcolor{gray}{internal identities \& composition;} % \(\mathrm{id}_X \colon \hom{V}{𝟙}{(\ihom{X}{X})}\) \& sequencing operation \(\hom{V}{(\ihom{X}{Y}⊗\ihom{Y}{Z})}{(\ihom{X}{Z})}\)
-  \item \textcolor{gray}{internal counterparts to unitality \& associativity coherences}
+  \item for every \(X, Y \colon C_0\) the internal Hom \((\ihom{X}{Y})\colon V\)
+  \item \(\dots\) \textit{I will only show parts of definitions in this talk}
   \end{itemize}
 \end{definition}
 \begin{itemize}
-\item Denote with \(Γ X ≔ \hom{V}{𝟙}{X}; Γ \colon V → \mathsf{Set}\). Then for enriched \(C'\) there is the \emph{underlying} plain (i.e. \(\mathsf{Set}\)-enriched) category \((Γ^*C', \ihom[']{}{})\) with \(\ihom[']{X}{Y} ≔ \hom{V}{𝟙}{(\ihom{X}{Y})} = \glob{V}{𝟙}{\ihom{X}{Y}}\)
+\item Denote with \(Γ X ≔ \hom{V}{𝟙}{X}; Γ \colon V → \mathrm{Set}\). % the global element functor
+  Then for enriched \(C'\) there is the \emph{underlying} plain (i.e. \(\mathrm{Set}\)-enriched) category \((Γ^*C', \ihom[']{}{})\) with \(\ihom[']{X}{Y} ≔ \hom{V}{𝟙}{(\ihom{X}{Y})} = \glob{V}{𝟙}{\ihom{X}{Y}}\)
 \end{itemize}
-\begin{definition}[Enrichment of a category \(C\)]
+\begin{definition}[Enrichment of a category]
   \begin{itemize}
-  \item same data \& laws as above;
+  \item An enriched Category for \(C_0\), with
   \item \(C ≅ ΓC'\), in particular \(\expi{-}\colon \hom{C}{X}{Y} ≅ \glob{V}{𝟙}{\ihom{X}{Y}}\)
   \end{itemize}
 \end{definition}
@@ -358,15 +382,15 @@ I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
 \begin{frame}
   \frametitle{Families enriched in Families}
   \begin{itemize}
-  \item The Category of Families \((\mathsf{Set}^{C_0})\) is Cartesian monodial, inheriting that structure pointwise from \(\mathsf{Set}\)
-  \item In particular, \(𝟙 = \prod_{c ∈ C_0} 𝟙_{\mathsf{Set}}\)
+  \item The Category of Families \((\mathrm{Set}^{A})\) is Cartesian monodial, inheriting that structure pointwise from \(\mathrm{Set}\)
+  \item In particular, \(𝟙 = ∀ i ∈ A.\, 𝟙_{\mathrm{Set}}\)
+  \item The external hom is \(\hom{\mathrm{Set}^{A}}{X }{Y} = ∀ i ∈ A.\, \hom{\mathrm{Set}}{X i }{Y i}\)
   \item We consider the enrichment of families in families:
     \begin{itemize}
-    \item The internal hom: \((\ihom{X}{Y}) c = \hom{\mathsf{Set}}{X c }{Y c}\)
-    \item The agreement \(\hom{C}{X}{Y} ≅ \hom{V}{𝟙}{(\ihom{X}{Y})}\): %between external and internal homs % \glob{V}{𝟙}{\ihom{X}{Y}} (=
+    \item The internal hom: \((\ihom{X}{Y}) \colon \mathrm{Set}^{A}; (\ihom{X}{Y}) i = (\hom{\mathrm{Set}^{A}}{X }{Y}) i\)
+    \item External \& internal homs agree: \(\expi{-}\colon \hom{C}{X}{Y} ≅ \hom{V}{𝟙}{(\ihom{X}{Y})}\).
     \end{itemize}
   \end{itemize}
-\[\hom{\mathsf{Set}^{C_0}}{X }{Y} = \prod_{c ∈ C_0}\hom{\mathsf{Set}}{X c }{Y c} ≅ \prod_{c ∈ C_0}\hom{\mathsf{Set}}{𝟙_{\mathsf{Set}}}{\hom{\mathsf{Set}}{X c }{Y c}} = \hom{\mathsf{Set}^{C_0}}{𝟙}{\ihom{X}{Y}}\]
 \end{frame}
 
 \begin{frame}[fragile]
@@ -376,55 +400,73 @@ I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
   \begin{itemize}
   \item \textcolor<2->{lightgray}{A Category \(C\) enriched in Monoidal Category \(E\)}
   \item An endofunctor \(▸ \colon E → E\)
-  \item A nat. trans. \(\mathsf{next} \colon \hom{[E,E]}{\mathsf{Id}}{▸}\)
+  \item A nat. trans. \(\mathrm{next} \colon \hom{[E,E]}{\mathrm{Id}}{▸}\)
   \end{itemize}
-   \(E\) is a model of guarded recursive terms if:
-   \[ ∀ H \colon \hom{E}{▸ (\Hom)}{(\Hom)}.\ ∃!\, \mathrm{Löb}H \colon \glob{E}{𝟙}{\Hom}\text{ such that:} \]
-   \begin{equation*}
-\begin{tikzcd}[every label/.append style={font=\normalsize}]
-(\Hom) \arrow[r, "\mathsf{next}"]\ar[phantom, start anchor=center, end anchor=center]{dr}[description]{\refstepcounter{equation}(\theequation)\label{eq:lob}} & ▸ (\Hom) \arrow[d, "H"] \\
-𝟙 \arrow[u,"\mathrm{Löb}H"] \arrow[r,"\mathrm{Löb}H"] &  (\Hom)
-\end{tikzcd}
-\end{equation*}
+  \(E\) is a model of guarded recursive terms if:
+    \begin{gather*}
+      ∀ H \colon \hom{E}{▸ (\Hom)}{(\Hom)}.\ ∃!\, \mathrm{Löb}H \colon \glob{E}{𝟙}{\Hom}.\,\\
+      \mathrm{Löb}H = \mathrm{Löb}H; \mathrm{next}; H
+    \end{gather*}
 \visible<1>{%
 In particular: \(\expi{\mathrm{Löb}H} \colon \hom{C}{X}{Y}\).
-
 I.e. \(\mathrm{Löb}\) gives a guarded fixpoint for internal homs.
 }
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{\(\mathsf{PSh}(A,<)\) as a model of guarded recursive terms}
+  \frametitle{\(\mathrm{PSh}(A,<)\) as a model of guarded recursive terms}
   \begin{itemize}
-  \item \(▸ \colon \mathsf{PSh}(A,<) → \mathsf{PSh}(A,<) \)\\
+  \item \(▸ \colon \mathrm{PSh}(A,<) → \mathrm{PSh}(A,<) \)\\
     \(▸ P i = ∀ j < i.\, P j\)
     % `NatTrans(∂よi,P) = ∀ ( p : j < i). P p`
-  \item \(\mathsf{next}\colon \hom{\mathsf{Endo}(\mathsf{PSh}(A))}{\mathsf{Id}}{▸}\)\\
-    \(\mathsf{next}_i \colon P i → ∀ (p \colon j < i) .\, P j\) given by the presheaf's restriction maps : \(P_1 p\colon P i → P j\)
-  \item \(\mathrm{Löb}\) given by well founded induction / recursion:
-    \(∀ H \colon \idxbox{oiBlue}{\hom{E}{▸ P}{P}}.\ ∃!\, \mathrm{Löb}H \colon \idxbox{oiOrange}{\hom{E}{𝟙}{P}}\dots\)\\
-    % \mathrm{Löb}H = \mathrm{Löb}H; \mathsf{next} ; H
+  \item \(\mathrm{next}\colon \hom{\mathrm{Endo}(\mathrm{PSh}(A))}{\mathrm{Id}}{▸}\)\\
+    \(\mathrm{next}\, i \colon P i → ∀ (p \colon j < i) .\, P j\) given by the presheaf's restriction maps.%
+    % next takes a presheaf and sends it pointwise to to its values at strictly lower indices
+  \item \(\mathrm{Löb}\) given by well founded recursion:
+    \(∀ H \colon \idxbox{oiBlue}{\hom{E}{▸ P}{P}}.\ ∃!\, \mathrm{Löb}H \colon \idxbox{oiOrange}{\hom{E}{𝟙}{P}}.\, \mathrm{Löb}H = \mathrm{Löb}H; \mathrm{next}; H\)\\
+    % \mathrm{Löb}H = \mathrm{Löb}H; \mathrm{next} ; H
     \(\idxbox{oiBlue}{(∀ i .\, (∀ j < i.\, P j) → P i)} → \idxbox{oiOrange}{∀ i .\, P i}\)
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Enrichment of a Functor}
-\begin{definition}[Enrichment of a Functor]
-  Given:
+  \frametitle{Change of Base of Enrichment}
+Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
+\begin{definition}
   \begin{itemize}
-  \item Categories \(C, D\) with \(V\)-enrichments \((EC,\ihom{}{},\expi{-})\) and \((ED,\ihom[']{}{},\expi{-}')\);
-  \item Functor \(F \colon C → D\)
+  \item   A \emph{lax monoidal} functor \(F \colon M → N\) has a comparison arrow \(ε \colon \hom{N}{J}{F I}\).
+  \item It \emph{preserves underlying categories} if \(\hat{ε}_X ≔ ε ; F_1– \colon \hom{\mathrm{Set}}{\ehom{M}{I}{X}}{\ehom{N}{J}{F X}}\) is a bijection.
   \end{itemize}
-   An \emph{enrichment} of \(F\) in \(EC,ED\) is an internal functorial action
-   \[F_1' \colon \hom{V}{\ihom{X}{Y}}{\ihom[']{F_0 X}{F_0 Y}'}\]
-   \vspace{-1\baselineskip{}}
-   \begin{itemize}
-   \item \textcolor{gray}{obeying internal counterparts to preservation of id and comp.;}
-   \item and such that \(F_1\) and \(F_1'\) \emph{agree}: (\(\expi{-}\colon \hom{C}{X}{Y} ≅ \glob{V}{𝟙}{\ihom{X}{Y}}\))
-   \end{itemize}
-  \[∀ f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; F_1' \]
-\end{definition}  
+\end{definition}
+\begin{proposition}[Change of Base]
+  Let \((C',\ihom{}{})\) be an \(M\)-enriched category for \(C_0\).
+  \begin{itemize}
+  \item There is an \(N\)-enriched category \((F^*C',\ihom[']{}{})\) for \(C_0\) called \emph{the base-change of \(C'\) along \(F\)} with \(\ihom[']{X}{Y} ≔ F (\ihom{X}{Y})\).
+  \item If \(F\) preserves underlying categories, it induces a change of base of \emph{enrichment}. For \((EC,\expi{-})\) set \((F^*(EC),\expi{-};\hat{ε})\).
+  \end{itemize}
+\end{proposition}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Families Enriched in Presheaves}
+  \begin{itemize}
+  \item We already saw families enriched in families \((\mathrm{Fam}(A),\ihom{}{})\)
+  \item To change their base of enrichment to presheaves, we need a lax monoidal functor \(\mathrm{Fam}(A) → \mathrm{PSh}(A)\) that preserves underlying categories.
+  \item Enter the \emph{cofree presheaf functor}: \(U ⊣ \mathrm{Cofree}\), \(\mathrm{Cofree}\, X i ≔ ∀ j ≤ i. \, X j\)
+  \item \textcolor{gray}{lax monoidal structure \& preservation of underlying categories derives from RAPL}
+  \item Then enrichment of families in presheaves is given by \((\mathrm{Cofree}^*(\mathrm{Fam}(A)),\ihom[']{}{})\) with \(\ihom[']{X}{Y} = \mathrm{Cofree}\, (\ihom{X}{Y})\)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Enriched Functors \& Enrichment}
+  \begin{definition}[Enriched functor]
+      An \emph{enriched functor} between enriched categories \((C',\ihom{}{})\), \((D',\ihom[']{}{})\) for \(C_0,D_0\), and a map \(F_0 \colon \hom{\mathrm{Set}}{C_0}{D_0}\), has an internal functorial action \(F_1' \colon \hom{V}{\ihom{X}{Y}}{\ihom[']{F_0 X}{F_0 Y}'}\).
+    \end{definition}
+
+    \begin{definition}[Enrichment of a functor]
+        Given categories \(C, D\) with enrichments \((\expi{-})\) and \((\expi{-}')\), an \emph{enrichment} of a functor \(F \colon C → D\) is an enriched functor for \(F_0\) such that \(F_1\) and \(F_1'\) \emph{agree}: \(∀ f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; F_1'\).
+    \end{definition}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -435,30 +477,25 @@ I.e. \(\mathrm{Löb}\) gives a guarded fixpoint for internal homs.
   \item \(V\) a model of guarded recursive terms
   \item Categories \(C,D\) with \(V\)-enrichments \((EC,\ihom{}{},\expi{-}), (ED,\ihom[']{}{}\expi{-}')\)
   \item Functor \(F \colon C → D\)
-  \item An enriched functor \(F' \colon ▸^*EC → ED\) with \(F_0\) as object map
+  \item An enriched functor \(F' \colon ▸^*EC → ED\) for \(F_0\) (its \emph{contractive action})
   \end{itemize}
-    \(F\) is \emph{locally contractive} if it has as enrichment the sequence of enrichments \(EC \xrightarrow{\mathsf{next}} ▸^*EC \xrightarrow{F'} ED\), i.e. \(∀f : \hom{C}{X}{Y}.\)
-\begin{equation*}
-\begin{tikzcd}[every label/.append style={font=\normalsize}]
-(\ihom{X}{Y}) \arrow[r, "\mathsf{next}"] & ▸ (\ihom{X}{Y}) \arrow[d, "F_1'"] \\
-𝟙 \arrow[u,"\expi{f}"] \arrow[r,"\expi{F_1 f}'"] &  (\ihom[']{F_0X}{F_0Y})
-\end{tikzcd}
-\end{equation*}
+  \(F\) is \emph{locally contractive} if it has as enrichment the sequence of enrichments \(EC \xrightarrow{\mathrm{next}} ▸^*EC \xrightarrow{F'} ED\), i.e.
+  \[∀ f \colon \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; \mathrm{next} ; F_1'\]
 \end{definition}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{lcf concretely for Presheaf enrichment}
     \begin{itemize}
-  \item \( f \colon \hom{\mathsf{Fam}(A)}{X}{Y} \)
+  \item \( f \colon \hom{\mathrm{Fam}(A)}{X}{Y} \)
   \item \(
     \begin{alignedat}{3}
-      &\expi{f};\mathsf{next}\ i\  && ∈ ▸ (\ihom{X}{Y}) i = ∀ j < i.\, (\ihom{X}{Y}) j \\
-      &\expi{f};\mathsf{next}\ i\ &&= \expi{f} \mid_{<i}
+      &\expi{f};\mathrm{next}\,i\, *\  && ∈ ▸ (\ihom{X}{Y}) i = ∀ j < i.\, (\ihom{X}{Y}) j \\
+      &\expi{f};\mathrm{next}\,i\, *\ &&= \expi{f} \mid_{<i}
     \end{alignedat}
     \)
 
-  \item So \enquote{\(\expi{F_1 f} = \expi{f};\mathsf{next};F_1'\)} says \enquote{\(F_1'\) is a way to apply \(F\) to Homs pointwise restricted to lower indices}
+  \item So \enquote{\(\expi{F_1 f} = \expi{f};\mathrm{next};F_1'\)} says \enquote{\(F_1'\) is a way to apply \(F\) to Homs pointwise restricted to lower indices}
   \end{itemize}
 \end{frame}
 
@@ -471,60 +508,29 @@ I.e. \(\mathrm{Löb}\) gives a guarded fixpoint for internal homs.
       \end{tikzcd}
     \end{equation*}
 \begin{itemize}
-\item Note that in \eqref{eq:square}, the functional \(H(h) ≔ c ; h ; a\) has type \(\hom{V}{(\ihom{F_0 I}{F_0 O})}{(\ihom{I}{O})}\).
+\item Note that in \eqref{eq:hylo}, the functional \(H(1?) ≔ c ; 1? ; a\) has type \(\hom{V}{(\ihom{F_0 I}{F_0 O})}{(\ihom{I}{O})}\).
 \item Local contractivity of \(F\) gives us \(F_1' \colon \hom{V}{▸ (\ihom{I}{O})}{(\ihom{F_0 I}{F_0 O})}\).
 \item Putting them together we get {\center \(▸ (\ihom{I}{O}) \xrightarrow{F_1'} (\ihom{F_0 I}{F_0 O}) \xrightarrow{H} (\ihom{I}{O}).\)\par{}}
 \item Applying \(\mathrm{Löb} \colon (▸ (\ihom{I}{O}) → (\ihom{I}{O})) → \glob{V}{𝟙}{\ihom{I}{O}}\) gives us {\center \(\expi{\mathrm{Löb} (F_1' ; H)} \colon (I → O).\)\par{}}
 \end{itemize}
 \end{frame}
 
-\section{Instantiation}
-
-\begin{frame}
-  \frametitle{Change of Base of Enrichment}
-Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
-% \begin{definition}[Lax monoidal functor]
-%   \color{gray}
-%   A functor \(F \colon M → N\) is \emph{lax monoidal} if it has comparison arrows:
-%   \begin{itemize}\color{gray}
-% \item \(ε \colon \hom{N}{J}{F I}\), and
-% \item \(μ_{X,Y} \colon \hom{N}{F x ⊗ F Y}{F (x * y)}\) agreeing with the unitors and associators of \(M\) and \(N\).
-% \end{itemize}
-% \end{definition}
-
-\begin{proposition}[Change of Base]
-  Let \((C',\ihom{}{})\) be an \(M\)-enriched category for \(C_0\). Let \(F\colon M → N\) be a \textcolor{gray}{lax monoidal} functor. We can define an \(N\)-enriched category \((F^*C',\ihom[']{}{})\) for \(C_0\) called \emph{the base-change of \(EC\) along \(F\)} with
-  \[\ihom[']{X}{Y} ≔ F (\ihom{X}{Y}).\]
-\end{proposition}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Families Enriched in Presheaves}
-  \begin{itemize}
-  \item We already saw families enriched in families \((\mathsf{Fam}(A),\ihom{}{})\)
-  \item To change their base of enrichment to presheaves, we need a lax monoidal functor \(\mathsf{Fam}(A) → \mathsf{PSh}(A)\)
-  \item Enter the \emph{cofree presheaf functor}: \(U ⊣ \mathsf{Cofree}\), \(\mathsf{Cofree}(B)(x) ≔ ∀ y ≤ x. \, B(x)\)
-  \item \textcolor{gray}{lax monoidal structure derives from RAPL}
-  \item Then enrichment of families in presheaves is given by \((\mathsf{Cofree}^*(\mathsf{Fam}(A)),\ihom[']{}{})\) with \(\ihom[']{X}{Y} = \mathsf{Cofree}\, (\ihom{X}{Y})\)
-  \end{itemize}
-\end{frame}
-
 \begin{frame}
   \frametitle{There and Back Again : Families are Enough}
-  \framesubtitle{Bringing local contractivity to Families by transposition along \(U ⊣ \mathsf{Cofree}\)}
+  \framesubtitle{Bringing local contractivity to Families by transposition along \(U ⊣ \mathrm{Cofree}\)}
   % we have later at home
   \begin{itemize}
-  \item We can define a version of \(▸\) for families by \(▸' ≔ U ∘ ▸ ∘ \mathsf{Cofree}\) % conjugating by the U ⊣ Cofree
+  \item We can define a version of \(▸\) for families by \(▸' ≔ U ∘ ▸ ∘ \mathrm{Cofree}\) % conjugating by the U ⊣ Cofree
   \item for lcf, the contractive action of \(F\) lives in
-    \(\hom{\mathsf{Psh}(A)}{▸ (\ihom[']{X}{Y})}{(\ihom[']{FX}{FY})} =\)\\[1em]
-    \(\ehom{\mathsf{Psh}(A)}{▸ \mathsf{Cofree}\, (\ihom{X}{Y})}{\mathsf{Cofree}\, (\ihom{FX}{FY})}=\)\\[1em]
-    \(\ehom{\mathsf{Psh}(A)}{\idxbox{oiBlue}{▸ \mathsf{Cofree}\, (\ihom{X}{Y})}}{\mathbf{Cofree}\, \idxbox{oiOrange}{\ihom{FX}{FY}}}\)\\[1em]
-    \(≅\langle  \) transpose this homset along \(\mathbf{U} ⊣ \mathbf{Cofree}\)! \(\rangle\)\\[1em]
-    \(\ehom{\mathsf{Fam}(A)}{\mathbf{U} \idxbox{oiBlue}{▸ \mathsf{Cofree}\, (\ihom{X}{Y})}}{\idxbox{oiOrange}{\ihom{FX}{FY}}}=\)\\[1em]
-    \(\hom{\mathsf{Fam}(A)}{▸' (\ihom{X}{Y})}{(\ihom{FX}{FY})}\)
+    \(\hom{\mathrm{Psh}(A)}{▸ (\ihom[']{X}{Y})}{(\ihom[']{FX}{FY})} =\)\\[1em]
+    \(\ehom{\mathrm{Psh}(A)}{▸ \mathrm{Cofree}\, (\ihom{X}{Y})}{\mathrm{Cofree}\, (\ihom{FX}{FY})}=\)\\[1em]
+    \(\ehom{\mathrm{Psh}(A)}{\idxbox{oiBlue}{▸ \mathrm{Cofree}\, (\ihom{X}{Y})}}{\mathrm{Cofree}\, \idxbox{oiOrange}{\ihom{FX}{FY}}}\)\\[1em]
+    \(≅\langle  \) transpose this homset along \(U ⊣ \mathrm{Cofree}\)! \(\rangle\)\\[1em]
+    \(\ehom{\mathrm{Fam}(A)}{U \idxbox{oiBlue}{▸ \mathrm{Cofree}\, (\ihom{X}{Y})}}{\idxbox{oiOrange}{\ihom{FX}{FY}}}=\)\\[1em]
+    \(\hom{\mathrm{Fam}(A)}{▸' (\ihom{X}{Y})}{(\ihom{FX}{FY})}\)
 %  \item \textcolor{gray}{The agreement condition of the functor enrichment can be similarly ported to the setting of families only}
   % \item This yields an expression of lcf for enrichment in families
-  % \item Transposed along \(U ⊣ \mathsf{Cofree}\), this is equivalent to the usual lcf
+  % \item Transposed along \(U ⊣ \mathrm{Cofree}\), this is equivalent to the usual lcf
   \end{itemize}
 \end{frame}
 
@@ -547,13 +553,14 @@ Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
   \end{pmatrix}
 \]
 
+\[\hom{\mathrm{Fam}(A)}{▸' (\ihom{X}{Y})}{(\ihom{\overline{B}X}{\overline{B}Y})} = ∀ i .\, \hom{𝒞}{(∀ j < i.\, \hom{𝒞}{X j}{Y j})}{(\hom{𝒞}{\overline{B}X i}{\overline{B}Y i})}\]
+
 \begin{equation*}
-\begin{alignedat}{3}
-  &\overline{B}' \;&&\mathrlap{\colon \hom{\mathsf{Fam}(A)}{▸' (\ihom{X}{Y})}{(\ihom{\overline{B}X}{\overline{B}Y})}} \\
-  &\overline{B}'   &&(i = ∅)\ &&f\ &&* &&= * \\
-  &\overline{B}'   &&(\idxboxon<2->{oiPurple}{i = \idxboxon<2->{oiBlue}{j} \uplus \{p\} \uplus \idxboxon<2->{oiOrange}{k}})\ &&(f \colon ∀ (j \idxboxon<2->{oiPurple}{< i}).\, X j → Y j)\\
-  &                &&&&(l ∈ X \idxboxon<2->{oiBlue}{j},\, p ,\, r ∈ X \idxboxon<2->{oiOrange}{k}) &&&&=(f l ,\, p ,\, f r)
-\end{alignedat}
+  \begin{alignedat}{9}
+    &\overline{B}' \;&&\mathrlap{\colon ∀ i .\, \hom{𝒞}{(∀ j < i.\, \hom{𝒞}{X j}{Y j})}{(\hom{𝒞}{\overline{B}X i}{\overline{B}Y i})}} \\
+    &\overline{B}'   &&(i = ∅)\ &&f\ &&\ * &&≔ * \\
+    &\overline{B}'   &&(i = j \uplus \{p\} \uplus k)\ &&f &&(l ∈ X j, p , r ∈ X k) &&≔(f l , p , f r)
+  \end{alignedat}
 \end{equation*}
 \end{frame}
 
@@ -577,7 +584,7 @@ Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
     %   \begin{itemize}
     % \item Novel instantiation of lcf on \(𝒞^A\), for \((A, <)\) a well founded order
     % \item all coalgebras for a lcf are recursive (corollary of known result) \(⇒\) usable for same applications as wff
-    % \item instantiation achieved by an \emph{enrichment} of \(𝒞^A\) in \(\mathsf{PSh}(A,<)\)
+    % \item instantiation achieved by an \emph{enrichment} of \(𝒞^A\) in \(\mathrm{PSh}(A,<)\)
     % \item Families are enough: Enrichment in families and a new condition \enquote{lc-Fam} sufficient for lcf
     % \end{itemize}
 
