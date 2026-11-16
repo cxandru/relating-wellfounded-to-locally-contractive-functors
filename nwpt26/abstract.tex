@@ -302,7 +302,7 @@ We fix monoidal categories \((M,*,I)\) and \((N,⊗,J)\).
 \begin{definition}[\agdaref{Cubical.Categories.Enriched.Enrichment.LocallyContractive}{isLocallyContractive}{}]
   Fix \(V\) a model of guarded recursive terms, categories \(C,D\) with \(V\)-enrichments \((EC,\expi{-}), (ED,\expi{-}')\).
   A functor \(F \colon C → D\) is \emph{locally contractive}~\cite[Def.~6.1]{birkedalFirstStepsSynthetic2012}, if there exists an enriched functor \(F_1' \colon ▸^*(EC) → ED\) for \(F_0\) such that the sequence \(EC \midarrow{\mathsf{next}} ▸^*(EC) \midarrow{F'} ED\) is an enrichment of \(F\), i.e.
-  \(∀ f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; \mathsf{next} ; F_1'\)
+  \(∀ f \colon \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; \mathsf{next} ; F_1'\)
 \end{definition}
 \begin{example}
   For \(\mathsf{PSh}(A,<)\) as model of guarded recursive terms (\autoref{ex:pshguard}), we have \(\expi{f};\mathsf{next}\ i = \expi{f} \mid_{<i}\) So \enquote{\(\expi{F_1 f} = \expi{f};\mathsf{next};F_1'\)} says \enquote{\(F_1'\) is a way to apply \(F\) to Homs pointwise restricted to lower indices}
