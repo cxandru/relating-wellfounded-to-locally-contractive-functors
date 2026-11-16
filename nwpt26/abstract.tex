@@ -288,7 +288,7 @@ We fix monoidal categories \((M,*,I)\) and \((N,⊗,J)\).
   Let \((C',\ihom{}{})\) be an \(M\)-enriched category for \(C_0\). Let \(F\colon M → N\) be a lax monoidal functor. There is an \(N\)-enriched category \((F^*C',\ihom[']{}{})\) for \(C_0\) called \emph{the base-change of \(C\) along \(F\)} with \(\ihom[']{X}{Y} ≔ F (\ihom{X}{Y})\). If \(F\) additionally preserves underlying categories, it induces a change of base of \emph{enrichment}. For \((EC,\expi{-})\) set \((F^*(EC),\expi{-};\hat{ε})\).
 \end{definition}
 \begin{definition}
-  The \emph{cofree presheaf functor} \(\mathsf{Cofree} \colon  \mathsf{Fam}(A) → \mathsf{PSh}(A,<)\) is the right adjoint to the forgetful functor \(U \colon \mathsf{PSh}(A,<) → \mathsf{Fam}(A)\) with \(\mathsf{Cofree}\, X i = ∀ j ≤ i. \, X i\). It is lax monoidal and preserves underlying categories.
+  The \emph{cofree presheaf functor} \(\mathsf{Cofree} \colon  \mathsf{Fam}(A) → \mathsf{PSh}(A,<)\) is the right adjoint to the forgetful functor \(U \colon \mathsf{PSh}(A,<) → \mathsf{Fam}(A)\) with \(\mathsf{Cofree}\, X i = ∀ j ≤ i. \, X j\). It is lax monoidal and preserves underlying categories.
 \end{definition}
 \begin{theorem}[\agdaref{Cubical.Categories.Enriched.Enrichment.Instances.Power}{Cᴬ-Psh-Enrichment}{}]\label{ex:fampsh}
 \(𝒞^A\) is enriched in \(\mathsf{PSh}(A,<)\), with the enrichment given by change-of-base of its enrichment in \(\mathsf{Fam}(A)\) (\autoref{ex:fam}) along \(\mathsf{Cofree}\).
