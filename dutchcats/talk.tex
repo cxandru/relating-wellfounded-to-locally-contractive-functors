@@ -396,17 +396,19 @@ I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
 \begin{frame}[fragile]
   \frametitle{A Model of Guarded Recursive Terms}
   \def\Hom{\samebox{\ihom{X}{Y}}{\alt<2->{P}{\ihom{X}{Y}}}}%
-  Given:
-  \begin{itemize}
-  \item \textcolor<2->{lightgray}{A Category \(C\) enriched in Monoidal Category \(E\)}
-  \item An endofunctor \(▸ \colon E → E\)
-  \item A nat. trans. \(\mathrm{next} \colon \hom{[E,E]}{\mathrm{Id}}{▸}\)
-  \end{itemize}
-  \(E\) is a model of guarded recursive terms if:
+  \begin{definition}
+    Given:
+    \begin{itemize}
+    \item \textcolor<2->{lightgray}{A Category \(C\) enriched in Monoidal Category \(E\)}
+    \item An endofunctor \(▸ \colon E → E\)
+    \item A nat. trans. \(\mathrm{next} \colon \hom{[E,E]}{\mathrm{Id}}{▸}\)
+    \end{itemize}
+    \(E\) is a model of guarded recursive terms if:
     \begin{gather*}
       ∀ H \colon \hom{E}{▸ (\Hom)}{(\Hom)}.\ ∃!\, \mathrm{Löb}H \colon \glob{E}{𝟙}{\Hom}.\,\\
       \mathrm{Löb}H = \mathrm{Löb}H; \mathrm{next}; H
     \end{gather*}
+  \end{definition}
 \visible<1>{%
 In particular: \(\expi{\mathrm{Löb}H} \colon \hom{C}{X}{Y}\).
 I.e. \(\mathrm{Löb}\) gives a guarded fixpoint for internal homs.
