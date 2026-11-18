@@ -222,11 +222,12 @@ inner sep=0pt,minimum size=1cm}}
 
 \begin{frame}
   \frametitle{Overview}
-  This talk is about defining \emph{recursive algorithms} in functional languages such that they are \emph{intrinsically correct \& terminating}
+  This talk is about defining \emph{recursive algorithms} in functional languages such that they are \emph{intrinsically correct \& total}
   \begin{itemize}
   \item Following the paradigm of \emph{structured recursion}, the recursion behaviour of \emph{divide-and-conquer} algorithms can be separated from their recursive steps, which can be expressed categorically as \emph{(co)algebras} for a \emph{functor}
   \item We show how functors for intrinsically correct functional algorithms can be expressed as being \emph{locally contractive} \parencite{birkedalFirstStepsSynthetic2012}
-  \item \emph{termination} of these algorithms then \emph{holds intrinsically}.
+  \item these algorithms are then \emph{intrinsically total}
+  \item for recursion this means \emph{termination}, \textcolor{gray}{for corecursion \emph{productivity}}.
   \end{itemize}
 \end{frame}
 
