@@ -445,7 +445,7 @@ Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
   Let \((C',\ihom{}{})\) be an \(M\)-enriched category for \(C_0\).
   \begin{itemize}
   \item There is an \(N\)-enriched category \((F^*C',\ihom[']{}{})\) for \(C_0\) called \emph{the base-change of \(C'\) along \(F\)} with \(\ihom[']{X}{Y} ≔ F (\ihom{X}{Y})\).
-  \item If \(F\) preserves underlying categories, it induces a change of base of \emph{enrichment}. For \((EC,\expi{-})\) set \((F^*(EC),\expi{-};\hat{ε})\).
+  \item If \(F\) preserves underlying categories, it induces a change of base of \emph{enrichment}. For \((C',\expi{-})\) set \((F^*(C'),\expi{-};\hat{ε})\).
   \end{itemize}
 \end{proposition}
 \end{frame}
@@ -478,11 +478,11 @@ Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
     Given:
   \begin{itemize}
   \item \(V\) a model of guarded recursive terms
-  \item Categories \(C,D\) with \(V\)-enrichments \((EC,\ihom{}{},\expi{-}), (ED,\ihom[']{}{}\expi{-}')\)
+  \item Categories \(C,D\) with \(V\)-enrichments \((C',\ihom{}{},\expi{-}), (D',\ihom[']{}{}\expi{-}')\)
   \item Functor \(F \colon C → D\)
-  \item An enriched functor \(F' \colon ▸^*EC → ED\) for \(F_0\) (its \emph{contractive action})
+  \item An enriched functor \(F' \colon ▸^*C' → D'\) for \(F_0\) (its \emph{contractive action})
   \end{itemize}
-  \(F\) is \emph{locally contractive} if it has as enrichment the sequence of enrichments \(EC \xrightarrow{\mathrm{next}} ▸^*EC \xrightarrow{F'} ED\), i.e.
+  \(F\) is \emph{locally contractive} if it has as enrichment the sequence of enrichments \(C' \xrightarrow{\mathrm{next}} ▸^*C' \xrightarrow{F'} D'\), i.e.
   \[∀ f \colon \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; \mathrm{next} ; F_1'\]
 \end{definition}
 \end{frame}
