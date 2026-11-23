@@ -369,13 +369,13 @@ I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
   \end{itemize}
 \end{definition}
 \begin{itemize}
-\item Denote with \(Γ X ≔ \hom{V}{𝟙}{X}; Γ \colon V → \mathrm{Set}\). % the global element functor
+\item Denote with \(Γ \colon V → \mathrm{Set}; Γ X ≔ \hom{V}{𝟙}{X}\). % the global element functor
   Then for enriched \(C'\) there is the \emph{underlying} plain (i.e. \(\mathrm{Set}\)-enriched) category \((Γ^*C', \ihom[']{}{})\) with \(\ihom[']{X}{Y} ≔ \hom{V}{𝟙}{(\ihom{X}{Y})} = \glob{V}{𝟙}{\ihom{X}{Y}}\)
 \end{itemize}
 \begin{definition}[Enrichment of a category]
   \begin{itemize}
-  \item An enriched Category for \(C_0\), with
-  \item \(C ≅ ΓC'\), in particular \(\expi{-}\colon \hom{C}{X}{Y} ≅ \glob{V}{𝟙}{\ihom{X}{Y}}\)
+  \item An enriched Category \((C,\ihom{}{})\) for \(C_0\), with
+  \item \(C ≅ Γ^*C'\), in particular \(\expi{-}\colon \hom{C}{X}{Y} ≅ \glob{V}{𝟙}{\ihom{X}{Y}}\)
   \end{itemize}
 \end{definition}
 \end{frame}
@@ -386,17 +386,14 @@ I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
   \item The Category of Families \((\mathrm{Set}^{A})\) is Cartesian monodial, inheriting that structure pointwise from \(\mathrm{Set}\)
   \item In particular, \(𝟙 = ∀ i ∈ A.\, 𝟙_{\mathrm{Set}}\)
   \item The external hom is \(\hom{\mathrm{Set}^{A}}{X }{Y} = ∀ i ∈ A.\, \hom{\mathrm{Set}}{X i }{Y i}\)
-  \item We consider the enrichment of families in families:
-    \begin{itemize}
-    \item The internal hom: \((\ihom{X}{Y}) \colon \mathrm{Set}^{A}; (\ihom{X}{Y}) i = (\hom{\mathrm{Set}^{A}}{X }{Y}) i\)
-    \item External \& internal homs agree: \(\expi{-}\colon \hom{C}{X}{Y} ≅ \hom{V}{𝟙}{(\ihom{X}{Y})}\).
-    \end{itemize}
+  \item The internal hom is \((\ihom{X}{Y}) i = (\hom{\mathrm{Set}^{A}}{X }{Y}) i\)
+  \item External \& internal homs agree: \(\expi{-}\colon \hom{C}{X}{Y} ≅ \hom{V}{𝟙}{(\ihom{X}{Y})}\).
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{A Model of Guarded Recursive Terms}
-  \def\Hom{\samebox{\ihom{X}{Y}}{\alt<2->{P}{\ihom{X}{Y}}}}%
+  \def\Hom{\samebox{\ihom{X}{Y\,}}{\alt<2->{P}{\ihom{X}{Y\,}}}}%
   \begin{definition}
     Given:
     \begin{itemize}
@@ -423,7 +420,9 @@ I.e. \(\mathrm{Löb}\) gives a guarded fixpoint for internal homs.
     \(▸ P i = ∀ j < i.\, P j\)
     % `NatTrans(∂よi,P) = ∀ ( p : j < i). P p`
   \item \(\mathrm{next}\colon \hom{\mathrm{Endo}(\mathrm{PSh}(A))}{\mathrm{Id}}{▸}\)\\
-    \(\mathrm{next}\, i \colon P i → ∀ (p \colon j < i) .\, P j\) given by the presheaf's restriction maps.%
+    \(\mathrm{next}\,P\, i \colon P i → ∀ j < i .\, P j\)\\
+    Given by the presheaf's restriction maps:\\
+    \(P_1 \colon (j ≤ i) → P i → P j\) % this is where the `S` like action happens: You apply evaluation at j<i both to P₁
     % next takes a presheaf and sends it pointwise to to its values at strictly lower indices
   \item \(\mathrm{Löb}\) given by well founded recursion:
     \(∀ H \colon \idxbox{oiBlue}{\hom{E}{▸ P}{P}}.\ ∃!\, \mathrm{Löb}H \colon \idxbox{oiOrange}{\hom{E}{𝟙}{P}}.\, \mathrm{Löb}H = \mathrm{Löb}H; \mathrm{next}; H\)\\
@@ -434,18 +433,20 @@ I.e. \(\mathrm{Löb}\) gives a guarded fixpoint for internal homs.
 
 \begin{frame}
   \frametitle{Change of Base of Enrichment}
-Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
-\begin{definition}
-  \begin{itemize}
-  \item   A \emph{lax monoidal} functor \(F \colon M → N\) has a comparison arrow \(ε \colon \hom{N}{J}{F I}\).
-  \item It \emph{preserves underlying categories} if \(\hat{ε}_X ≔ ε ; F_1– \colon \hom{\mathrm{Set}}{\ehom{M}{I}{X}}{\ehom{N}{J}{F X}}\) is a bijection.
-  \end{itemize}
-\end{definition}
+NB: \textcolor{gray}{gray text} indicates opaque terms.
+
+Let \(M\) and \(N\) be monoidal categories, and \(F \colon M → N\) a \textcolor{gray}{lax monoidal} functor between them.
+% \begin{definition}
+%   \begin{itemize}
+%   \item   A \emph{lax monoidal} functor  has a comparison arrow \(ε \colon \hom{N}{J}{F I}\).
+%   \item It \emph{preserves underlying categories} if \(\hat{ε}_X ≔ ε ; F_1– \colon \hom{\mathrm{Set}}{\ehom{M}{I}{X}}{\ehom{N}{J}{F X}}\) is a bijection.
+%   \end{itemize}
+% \end{definition}
 \begin{proposition}[Change of Base]
   Let \((C',\ihom{}{})\) be an \(M\)-enriched category for \(C_0\).
   \begin{itemize}
   \item There is an \(N\)-enriched category \((F^*C',\ihom[']{}{})\) for \(C_0\) called \emph{the base-change of \(C'\) along \(F\)} with \(\ihom[']{X}{Y} ≔ F (\ihom{X}{Y})\).
-  \item If \(F\) preserves underlying categories, it induces a change of base of \emph{enrichment}. For \((C',\expi{-})\) set \((F^*(C'),\expi{-};\hat{ε})\).
+  \item If \(F\) \textcolor{gray}{preserves underlying categories}, it induces a change of base of \emph{enrichment} \((F^*C',\expi{-}')\).
   \end{itemize}
 \end{proposition}
 \end{frame}
@@ -454,9 +455,8 @@ Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
   \frametitle{Families Enriched in Presheaves}
   \begin{itemize}
   \item We already saw families enriched in families \((\mathrm{Fam}(A),\ihom{}{})\)
-  \item To change their base of enrichment to presheaves, we need a lax monoidal functor \(\mathrm{Fam}(A) → \mathrm{PSh}(A)\) that preserves underlying categories.
-  \item Enter the \emph{cofree presheaf functor}: \(U ⊣ \mathrm{Cofree}\), \(\mathrm{Cofree}\, X i ≔ ∀ j ≤ i. \, X j\)
-  \item \textcolor{gray}{lax monoidal structure \& preservation of underlying categories derives from RAPL}
+  \item The \emph{cofree presheaf functor}: \(U ⊣ \mathrm{Cofree}\) meets the requirements to induce a change of base of enrichment  \(\mathrm{Fam}(A) → \mathrm{PSh}(A)\).
+  \item \(\mathrm{Cofree}\, X i ≔ ∀ j ≤ i. \, X j\)
   \item Then enrichment of families in presheaves is given by \((\mathrm{Cofree}^*(\mathrm{Fam}(A)),\ihom[']{}{})\) with \(\ihom[']{X}{Y} = \mathrm{Cofree}\, (\ihom{X}{Y})\)
   \end{itemize}
 \end{frame}
@@ -464,27 +464,16 @@ Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
 \begin{frame}
   \frametitle{Enriched Functors \& Enrichment}
   \begin{definition}[Enriched functor]
-      An \emph{enriched functor} between enriched categories \((C',\ihom{}{})\), \((D',\ihom[']{}{})\) for \(C_0,D_0\), and a map \(F_0 \colon \hom{\mathrm{Set}}{C_0}{D_0}\), has an internal functorial action \(F_1' \colon \hom{V}{\ihom{X}{Y}}{\ihom[']{F_0 X}{F_0 Y}'}\).
+      An \emph{enriched functor} between \(V\)-enriched categories \((C',\ihom{}{})\), \((D',\ihom[']{}{})\) for \(C_0,D_0\), and object map \(F_0 \colon \hom{\mathrm{Set}}{C_0}{D_0}\), has an \emph{internal functorial action} \(F_1' \colon \hom{V}{\ihom{X}{Y}}{\ihom[']{F_0 X}{F_0 Y}'}\).
     \end{definition}
-
+Fix categories \(C, D\) with \(V\)-enrichments \((\expi{-})\) and \((\expi{-}')\) and \(F \colon C → D\).
     \begin{definition}[Enrichment of a functor]
-        Given categories \(C, D\) with enrichments \((\expi{-})\) and \((\expi{-}')\), an \emph{enrichment} of a functor \(F \colon C → D\) is an enriched functor for \(F_0\) such that \(F_1\) and \(F_1'\) \emph{agree}: \(∀ f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; F_1'\).
+      An \emph{enrichment} of \(F\) is an enriched functor \(F_1'\) for \(F_0\) such that \(F_1\) and \(F_1'\) \emph{agree}: \(∀ f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; F_1'\).
     \end{definition}
-\end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Locally Contractive Functors}
-  \begin{definition}
-    Given:
-  \begin{itemize}
-  \item \(V\) a model of guarded recursive terms
-  \item Categories \(C,D\) with \(V\)-enrichments \((C',\ihom{}{},\expi{-}), (D',\ihom[']{}{}\expi{-}')\)
-  \item Functor \(F \colon C → D\)
-  \item An enriched functor \(F' \colon ▸^*C' → D'\) for \(F_0\) (its \emph{contractive action})
-  \end{itemize}
-  \(F\) is \emph{locally contractive} if it has as enrichment the sequence of enrichments \(C' \xrightarrow{\mathrm{next}} ▸^*C' \xrightarrow{F'} D'\), i.e.
-  \[∀ f \colon \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; \mathrm{next} ; F_1'\]
-\end{definition}
+    \begin{definition}[Locally Contractive Functor]
+      With \(V\) a model of guarded recursive terms, \(F\) is \emph{locally contractive} given an enriched functor \(F' \colon ▸^*C' → D'\) for \(F_0\) (its \emph{contractive action}), such that \(∀ f \colon \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; \mathrm{next} ; F_1'\)
+    \end{definition}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -494,7 +483,7 @@ Let \((M,*,I)\) and \((N,⊗,J)\) be monoidal categories.
   \item \(
     \begin{alignedat}{3}
       &\expi{f};\mathrm{next}\,i\, *\  && ∈ ▸ (\ihom{X}{Y}) i = ∀ j < i.\, (\ihom{X}{Y}) j \\
-      &\expi{f};\mathrm{next}\,i\, *\ &&= \expi{f} \mid_{<i}
+      &\expi{f};\mathrm{next}\,i\, *\ &&= \expi{f \mid_{<i}}
     \end{alignedat}
     \)
 
