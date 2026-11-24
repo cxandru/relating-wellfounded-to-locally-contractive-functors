@@ -19,7 +19,7 @@
 \usepackage{unicode-math}
 \usepackage{tikz}
 \usepackage[absolute,overlay]{textpos}
-\usetikzlibrary{backgrounds,fit,calc,patterns,positioning,arrows.meta,quotes,overlay-beamer-styles,cd}
+\usetikzlibrary{backgrounds,fit,calc,shadows,patterns,positioning,arrows.meta,quotes,overlay-beamer-styles,cd}
 \usepackage{forest}
 \usepackage[conor]{../agda}
 \usepackage{catchfilebetweentags}
@@ -38,6 +38,7 @@
 \definecolor{oiBlue}{HTML}{0072B2}
 \definecolor{oiOrange}{HTML}{E69F00}
 \definecolor{oiPurple}{HTML}{CC79A7}
+\definecolor{oiGreen}{HTML}{009E73}
 % \idxbox{<colour>}{<math>}: rounded, thick-edged box around math
 \newcommand{\idxbox}[2]{%
   \tcboxmath[colframe=#1, colback=#1!10, boxrule=1.2pt, arc=3pt,
@@ -57,6 +58,8 @@
 \usepackage{qrcode}
 \usepackage{newunicodechar}
 \DeclarePairedDelimiter{\expi}{\lceil}{\rceil}
+\newcommand{\midarrow}[1]{%
+  \mathrel{\relbar#1\rightarrow}}
 \newunicodechar{⇒}{\ensuremath{\Rightarrow}}
 %\DeclareUnicodeCharacter{21D2}{\ensuremath{\Rightarrow}}
 \newunicodechar{ℰ}{\ensuremath{\mathscr{E}}}
@@ -204,7 +207,7 @@ inner sep=0pt,minimum size=1cm}}
 \author[Alexandru, Schaefer, New]{
   Cass Alexandru\inst{1} \and Steven Schaefer\inst{2} \and Max New\inst{2}
 }
-\institute[RPTU/RU \& UM]{%
+\institute[RPTU/RU , UM]{%
 \inst{1}RPTU Kaiserslautern-Landau \& Radboud University Nijmegen
 \and
 \inst{2} University of Michigan
@@ -224,10 +227,12 @@ inner sep=0pt,minimum size=1cm}}
   \frametitle{Overview}
   This talk is about defining \emph{recursive algorithms} in functional languages such that they are \emph{intrinsically correct \& total}
   \begin{itemize}
-  \item Following the paradigm of \emph{structured recursion}, the recursion behaviour of \emph{divide-and-conquer} algorithms can be separated from their recursive steps, which can be expressed categorically as \emph{(co)algebras} for a \emph{functor}
-  \item We show how functors for intrinsically correct functional algorithms can be expressed as being \emph{locally contractive} \parencite{birkedalFirstStepsSynthetic2012}
-  \item these algorithms are then \emph{intrinsically total}
+  \item Following the paradigm of structured recursion, \emph{divide-and-conquer} algorithms can be can be expressed categorically using \emph{functors}
+  \item We show how functors for \emph{intrinsically correct} algorithms can be expressed as being \emph{locally contractive} \parencite{birkedalFirstStepsSynthetic2012}
+  \item We show that algorithms for such functors are \emph{intrinsically total}
+    \begin{itemize}
   \item for recursion this means \emph{termination}, \textcolor{gray}{for corecursion \emph{productivity}}.
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -346,18 +351,39 @@ I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
   \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Plan}
-  \begin{itemize}
-  \item \emph{Enrichment of a Category}: Give hom objects the structure we need to do \(\dots\)
-  \item \emph{Guarded recursion}: abstract interface to construct hom objects using well founded recursion.
-  \item \emph{Enrichment of a Functor}: Notion need to express \(\dots\)
-  \item \emph{Locally Contractive Functors}: Functors which give rise to hylomorphisms via guarded recursion.
-  \end{itemize}
+% A Beamer block inside a TikZ node: \depbox[width]{title}{body}
+\newcommand{\depbox}[3][4.6cm]{%
+  \begin{minipage}{#1}
+    \vspace*{-\medskipamount}% Beamer adds space before a block
+    \begin{block}{\centering #2}
+      \centering\footnotesize #3
+    \end{block}
+    \vspace*{-\smallskipamount}% ...and after it
+  \end{minipage}}
+
+\begin{frame}{Plan: Dependency structure}
+  \centering
+  \begin{tikzpicture}[
+      box/.style={inner sep=0pt, outer sep=2pt,
+                  execute at begin node={\hyphenpenalty=10000}},
+      dep/.style={-{Stealth[length=2.5mm]}, thick, draw=structure.fg},
+    ]
+    \node[box] (enrcat) at (0,0)
+      {\depbox{Enrichment of a Category}{internalize homs as objects}};
+    \node[box] (guarded) at (-3,-2.3)
+      {\depbox{Guarded recursion}{construct internal homs using a guarded fixpoint principle}};
+    \node[box] (enrfun) at (3,-2.3)
+      {\depbox{Enrichment of a Functor}{internalize functorial action}};
+    \node[box] (contr) at (0,-4.8)
+      {\depbox[6.2cm]{Locally Contractive Functors}{have a \emph{contractive} internal action which yields hylomorphisms via guarded recursion}};
+    \draw[dep] (enrcat) -- (guarded);
+    \draw[dep] (enrcat) -- (enrfun);
+    \draw[dep] (guarded) -- (contr);
+    \draw[dep] (enrfun)  -- (contr);
+  \end{tikzpicture}
 \end{frame}
 
 % we can encode the correctness by indexing over the contents of the list…
-\section{Background}
 
 \begin{frame}[fragile]
   \frametitle{Enriched Categories \& Enrichment}
@@ -372,9 +398,9 @@ I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
 \item Denote with \(Γ \colon V → \mathrm{Set}; Γ X ≔ \hom{V}{𝟙}{X}\). % the global element functor
   Then for enriched \(C'\) there is the \emph{underlying} plain (i.e. \(\mathrm{Set}\)-enriched) category \((Γ^*C', \ihom[']{}{})\) with \(\ihom[']{X}{Y} ≔ \hom{V}{𝟙}{(\ihom{X}{Y})} = \glob{V}{𝟙}{\ihom{X}{Y}}\)
 \end{itemize}
-\begin{definition}[Enrichment of a category]
+\begin{definition}[Enrichment of a category \(C\)]
   \begin{itemize}
-  \item An enriched Category \((C,\ihom{}{})\) for \(C_0\), with
+  \item An enriched Category \((C',\ihom{}{})\) for \(C_0\), with
   \item \(C ≅ Γ^*C'\), in particular \(\expi{-}\colon \hom{C}{X}{Y} ≅ \glob{V}{𝟙}{\ihom{X}{Y}}\)
   \end{itemize}
 \end{definition}
@@ -383,6 +409,7 @@ I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
 \begin{frame}
   \frametitle{Families enriched in Families}
   \begin{itemize}
+  \item Intrinsically correct algorithms are expressed using indexed datatypes (families)
   \item The Category of Families \((\mathrm{Set}^{A})\) is Cartesian monodial, inheriting that structure pointwise from \(\mathrm{Set}\)
   \item In particular, \(𝟙 = ∀ i ∈ A.\, 𝟙_{\mathrm{Set}}\)
   \item The external hom is \(\hom{\mathrm{Set}^{A}}{X }{Y} = ∀ i ∈ A.\, \hom{\mathrm{Set}}{X i }{Y i}\)
@@ -409,7 +436,7 @@ I \arrow[u,"c_i"] \arrow[r,"h_{\alert{i}}"] &  O
   \end{definition}
 \visible<1>{%
 In particular: \(\expi{\mathrm{Löb}H} \colon \hom{C}{X}{Y}\).
-I.e. \(\mathrm{Löb}\) gives a guarded fixpoint for internal homs.
+I.e. \(\mathrm{Löb}\) gives a guarded fixpoint.
 }
 \end{frame}
 
@@ -431,6 +458,22 @@ I.e. \(\mathrm{Löb}\) gives a guarded fixpoint for internal homs.
   \end{itemize}
 \end{frame}
 
+% \gluedover{original text}{replacement text}
+\newlength{\gluedorigwd}
+\newcommand{\gluedover}[2]{%
+  \settowidth{\gluedorigwd}{#1}%
+  \begin{tikzpicture}[baseline=(orig.base)]
+    \node[inner sep=0pt, anchor=base] (orig) at (0,0) {\strut #1};
+    \node[anchor=center, rotate=0.8, inner xsep=2pt, inner ysep=0.6pt,
+          text height=1.85ex, text depth=0.55ex, % just ascenders/descenders
+          minimum width=\gluedorigwd,
+          fill=white, draw=black!20, line width=0.3pt,
+          drop shadow={opacity=0.3, shadow xshift=0.5pt, shadow yshift=-0.5pt}]
+      % centre = baseline + 1.2pt offset + half of (text height + depth + 2 ysep)
+      (patch) at ($(orig.base)+(0,{1.2pt + 0.6pt + (1.85ex+0.55ex)/2})$) {#2};
+  \end{tikzpicture}%
+}
+
 \begin{frame}
   \frametitle{Change of Base of Enrichment}
 NB: \textcolor{gray}{gray text} indicates opaque terms.
@@ -446,7 +489,7 @@ Let \(M\) and \(N\) be monoidal categories, and \(F \colon M → N\) a \textcolo
   Let \((C',\ihom{}{})\) be an \(M\)-enriched category for \(C_0\).
   \begin{itemize}
   \item There is an \(N\)-enriched category \((F^*C',\ihom[']{}{})\) for \(C_0\) called \emph{the base-change of \(C'\) along \(F\)} with \(\ihom[']{X}{Y} ≔ F (\ihom{X}{Y})\).
-  \item If \(F\) \textcolor{gray}{preserves underlying categories}, it induces a change of base of \emph{enrichment} \((F^*C',\expi{-}')\).
+  \item If \(F\) \gluedover{preserves underlying categories}{fulfills some additional requirement}, it also induces a change of base of \emph{enrichment} \((F^*C',\expi{-}')\).
   \end{itemize}
 \end{proposition}
 \end{frame}
@@ -464,17 +507,31 @@ Let \(M\) and \(N\) be monoidal categories, and \(F \colon M → N\) a \textcolo
 \begin{frame}
   \frametitle{Enriched Functors \& Enrichment}
   \begin{definition}[Enriched functor]
-      An \emph{enriched functor} between \(V\)-enriched categories \((C',\ihom{}{})\), \((D',\ihom[']{}{})\) for \(C_0,D_0\), and object map \(F_0 \colon \hom{\mathrm{Set}}{C_0}{D_0}\), has an \emph{internal functorial action} \(F_1' \colon \hom{V}{\ihom{X}{Y}}{\ihom[']{F_0 X}{F_0 Y}'}\).
+      An \emph{enriched functor} for \(F_0\) between \(V\)-enriched categories has an \emph{internal functorial action} \(F_1' \colon \hom{V}{\ihom{X}{Y}}{\ihom[']{F_0 X}{F_0 Y}'}\).
     \end{definition}
-Fix categories \(C, D\) with \(V\)-enrichments \((\expi{-})\) and \((\expi{-}')\) and \(F \colon C → D\).
     \begin{definition}[Enrichment of a functor]
-      An \emph{enrichment} of \(F\) is an enriched functor \(F_1'\) for \(F_0\) such that \(F_1\) and \(F_1'\) \emph{agree}: \(∀ f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; F_1'\).
+      An \emph{enrichment} of a functor \(F\) is an internal functorial action that agrees with its external functorial action: \(∀ f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; F_1'\)
     \end{definition}
 
     \begin{definition}[Locally Contractive Functor]
-      With \(V\) a model of guarded recursive terms, \(F\) is \emph{locally contractive} given an enriched functor \(F' \colon ▸^*C' → D'\) for \(F_0\) (its \emph{contractive action}), such that \(∀ f \colon \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; \mathrm{next} ; F_1'\)
+      With \(V\) a model of guarded recursive terms, \(F\) is \emph{locally contractive} if it has a \emph{contractive action} \(F' \colon ▸^*C' → D'\) which agrees with its external action: \(∀ f \colon \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; \mathrm{next} ; F_1'\)
+
     \end{definition}
 \end{frame}
+% \begin{frame}
+%   \frametitle{Enriched Functors \& Enrichment}
+%   \begin{definition}[Enriched functor]
+%       An \emph{enriched functor} between \(V\)-enriched categories \((C',\ihom{}{})\), \((D',\ihom[']{}{})\) for \(C_0,D_0\), and object map \(F_0 \colon \hom{\mathrm{Set}}{C_0}{D_0}\), has an \emph{internal functorial action} \(F_1' \colon \hom{V}{\ihom{X}{Y}}{\ihom[']{F_0 X}{F_0 Y}'}\).
+%     \end{definition}
+% Fix categories \(C, D\) with \(V\)-enrichments \((\expi{-})\) and \((\expi{-}')\) and \(F \colon C → D\).
+%     \begin{definition}[Enrichment of a functor]
+%       An \emph{enrichment} of \(F\) is an enriched functor \(F_1'\) for \(F_0\) such that \(F_1\) and \(F_1'\) \emph{agree}: \(∀ f : \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; F_1'\).
+%     \end{definition}
+
+%     \begin{definition}[Locally Contractive Functor]
+%       With \(V\) a model of guarded recursive terms, \(F\) is \emph{locally contractive} given an enriched functor \(F' \colon ▸^*C' → D'\) for \(F_0\) (its \emph{contractive action}), such that \(∀ f \colon \hom{C}{X}{Y}.\ \expi{F_1 f}' = \expi{f} ; \mathrm{next} ; F_1'\)
+%     \end{definition}
+% \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{lcf concretely for Presheaf enrichment}
@@ -483,11 +540,12 @@ Fix categories \(C, D\) with \(V\)-enrichments \((\expi{-})\) and \((\expi{-}')\
   \item \(
     \begin{alignedat}{3}
       &\expi{f};\mathrm{next}\,i\, *\  && ∈ ▸ (\ihom{X}{Y}) i = ∀ j < i.\, (\ihom{X}{Y}) j \\
-      &\expi{f};\mathrm{next}\,i\, *\ &&= \expi{f \mid_{<i}}
+      &\expi{f};\mathrm{next}\,i\, *\ &&= \expi{f \mid_{<i} }\,i\, *
     \end{alignedat}
     \)
 
-  \item So \enquote{\(\expi{F_1 f} = \expi{f};\mathrm{next};F_1'\)} says \enquote{\(F_1'\) is a way to apply \(F\) to Homs pointwise restricted to lower indices}
+  \item So \enquote{\(\expi{F_1 f} = \expi{f};\mathrm{next};F_1'\)} says \enquote{\(F\) agrees with its contractive action, which is defined on Homs pointwise restricted to lower indices}.
+  \item I.e.\ \emph{no information is lost by restricting Homs pointwise to lower indices}
   \end{itemize}
 \end{frame}
 
@@ -502,7 +560,7 @@ Fix categories \(C, D\) with \(V\)-enrichments \((\expi{-})\) and \((\expi{-}')\
 \begin{itemize}
 \item Note that in \eqref{eq:hylo}, the functional \(H(1?) ≔ c ; 1? ; a\) has type \(\hom{V}{(\ihom{F_0 I}{F_0 O})}{(\ihom{I}{O})}\).
 \item Local contractivity of \(F\) gives us \(F_1' \colon \hom{V}{▸ (\ihom{I}{O})}{(\ihom{F_0 I}{F_0 O})}\).
-\item Putting them together we get {\center \(▸ (\ihom{I}{O}) \xrightarrow{F_1'} (\ihom{F_0 I}{F_0 O}) \xrightarrow{H} (\ihom{I}{O}).\)\par{}}
+\item Putting them together we get {\center \(▸ (\ihom{I}{O}) \midarrow{F_1'} (\ihom{F_0 I}{F_0 O}) \midarrow{H} (\ihom{I}{O}).\)\par{}}
 \item Applying \(\mathrm{Löb} \colon (▸ (\ihom{I}{O}) → (\ihom{I}{O})) → \glob{V}{𝟙}{\ihom{I}{O}}\) gives us {\center \(\expi{\mathrm{Löb} (F_1' ; H)} \colon (I → O).\)\par{}}
 \end{itemize}
 \end{frame}
@@ -512,18 +570,10 @@ Fix categories \(C, D\) with \(V\)-enrichments \((\expi{-})\) and \((\expi{-}')\
   \framesubtitle{Bringing local contractivity to Families by transposition along \(U ⊣ \mathrm{Cofree}\)}
   % we have later at home
   \begin{itemize}
-  \item We can define a version of \(▸\) for families by \(▸' ≔ U ∘ ▸ ∘ \mathrm{Cofree}\) % conjugating by the U ⊣ Cofree
-  \item for lcf, the contractive action of \(F\) lives in
-    \(\hom{\mathrm{Psh}(A)}{▸ (\ihom[']{X}{Y})}{(\ihom[']{FX}{FY})} =\)\\[1em]
-    \(\ehom{\mathrm{Psh}(A)}{▸ \mathrm{Cofree}\, (\ihom{X}{Y})}{\mathrm{Cofree}\, (\ihom{FX}{FY})}=\)\\[1em]
-    \(\ehom{\mathrm{Psh}(A)}{\idxbox{oiBlue}{▸ \mathrm{Cofree}\, (\ihom{X}{Y})}}{\mathrm{Cofree}\, \idxbox{oiOrange}{\ihom{FX}{FY}}}\)\\[1em]
-    \(≅\langle  \) transpose this homset along \(U ⊣ \mathrm{Cofree}\)! \(\rangle\)\\[1em]
-    \(\ehom{\mathrm{Fam}(A)}{U \idxbox{oiBlue}{▸ \mathrm{Cofree}\, (\ihom{X}{Y})}}{\idxbox{oiOrange}{\ihom{FX}{FY}}}=\)\\[1em]
-    \(\hom{\mathrm{Fam}(A)}{▸' (\ihom{X}{Y})}{(\ihom{FX}{FY})}\)
-%  \item \textcolor{gray}{The agreement condition of the functor enrichment can be similarly ported to the setting of families only}
-  % \item This yields an expression of lcf for enrichment in families
-  % \item Transposed along \(U ⊣ \mathrm{Cofree}\), this is equivalent to the usual lcf
+  \item We can define a version of \(▸\) for families by \(▸' ≔ U ∘ ▸ ∘ \mathrm{Cofree}\)
+  \item Transposition along \(U ⊣ \mathrm{Cofree}\) yields:
   \end{itemize}
+    \[\hom{\mathrm{Psh}(A)}{▸ (\ihom[']{X}{Y})}{(\ihom[']{FX}{FY})} ≅ \hom{\mathrm{Fam}(A)}{▸' (\ihom{X}{Y})}{(\ihom{FX}{FY})}\]
 \end{frame}
 
 \begin{frame}[fragile]
@@ -544,15 +594,14 @@ Fix categories \(C, D\) with \(V\)-enrichments \((\expi{-})\) and \((\expi{-}')\
     (l, p, r) ↦ f(l) \uplus \{p\} \uplus f(r)
   \end{pmatrix}
 \]
-
 \[\hom{\mathrm{Fam}(A)}{▸' (\ihom{X}{Y})}{(\ihom{\overline{B}X}{\overline{B}Y})} = ∀ i .\, \hom{𝒞}{(∀ j < i.\, \hom{𝒞}{X j}{Y j})}{(\hom{𝒞}{\overline{B}X i}{\overline{B}Y i})}\]
 
 \begin{equation*}
-  \begin{alignedat}{9}
-    &\overline{B}' \;&&\mathrlap{\colon ∀ i .\, \hom{𝒞}{(∀ j < i.\, \hom{𝒞}{X j}{Y j})}{(\hom{𝒞}{\overline{B}X i}{\overline{B}Y i})}} \\
-    &\overline{B}'   &&(i = ∅)\ &&f\ &&\ * &&≔ * \\
-    &\overline{B}'   &&(i = j \uplus \{p\} \uplus k)\ &&f &&(l ∈ X j, p , r ∈ X k) &&≔(f l , p , f r)
-  \end{alignedat}
+\begin{alignedat}{9}
+  &\overline{B}' \;&&\mathrlap{\colon ∀ i .\, \hom{𝒞}{(\idxbox{oiOrange}{f \colon ∀ \idxbox{oiBlue}{j} < \idxbox{oiPurple}{i}.\, \hom{𝒞}{\idxbox{oiGreen}{X j}}{Y j}})}{(\hom{𝒞}{\overline{B}X i}{\overline{B}Y i})}} \\
+  &\overline{B}'   &&(i = ∅)\ &&\idxboxhidden{oiOrange}{f}\ &&\ * &&≔ * \\
+  &\overline{B}'   &&(\idxbox{oiPurple}{i = \idxbox{oiBlue}{j} \uplus \{p\} \uplus \idxbox{oiBlue}{k}})\ &&\idxbox{oiOrange}{f}\ &&(\idxbox{oiGreen}{l ∈ X \idxbox{oiBlue}{j}},\, p ,\, \idxbox{oiGreen}{r ∈ X \idxbox{oiBlue}{k}}) &&≔(\idxbox{oiOrange}{f\, \idxbox{oiGreen}{l}} ,\, p ,\, \idxbox{oiOrange}{f\, \idxbox{oiGreen}{r}})
+\end{alignedat}
 \end{equation*}
 \end{frame}
 
@@ -583,17 +632,19 @@ Fix categories \(C, D\) with \(V\)-enrichments \((\expi{-})\) and \((\expi{-}')\
 \begin{frame}
   \frametitle{Conclusion}
   \begin{itemize}
-  \item Novel application of locally contractive functors to total functional programming
-  \item Can be used \enquote{behind the scenes} as a theoretical underpinning while the programmer need only work in the setting of indexed datatypes (families)
-  \item Illustrates an interesting novel usecase for lcf in a category which is not self-enriched
+  \item Divide-and-conquer algorithms are naturally expressed as coalgebra-to-algebra morphisms for some functor
+  \item Expressing partial correctness intrinsically leads to refining types as indexed datatypes (families)
+  \item We show how functors on families can be expressed as locally contractive
+  \item We show that such functors yield intrinsically total algorithms
+  \item Theory employed \emph{behind the scenes}; interface stated purely in terms of indexed datatypes (families)
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{TODOs}
   \begin{itemize}
-  \item Use composition theorems to reduce client obligations: Famously local contractivity as is closed under composition with enriched functors
-  \item See whether solving domain equations using lcf is also useful in this setting
+  \item Use composition theorems to reduce client obligations: Famously local contractivity is closed under composition with enriched functors
+  \item Look into applications to corecursion / mixed recursion-corecursion
   \end{itemize}
 \end{frame}
 
